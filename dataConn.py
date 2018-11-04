@@ -6,7 +6,6 @@
 connection = None
 cursor = None
 
-
 def connect(path):
     global connection, cursor
 
@@ -72,14 +71,14 @@ def define_tables():
 def insert_data():
     global connection, cursor
 
-    insert_courses = '''
+    insert_courses =    '''
                         INSERT INTO course(course_id, title, seats_available) VALUES
                             (1, 'CMPUT 291', 200),
                             (2, 'CMPUT 391', 100),
                             (3, 'CMPUT 101', 300);
-                    '''
+                        '''
 
-    insert_students = '''
+    insert_students =       '''
                             INSERT INTO student(student_id, name) VALUES
                                     (1509106, 'Jeff'),
                                     (1409106, 'Alex'),
@@ -90,3 +89,115 @@ def insert_data():
     cursor.execute(insert_students)
     connection.commit()
     return
+
+
+
+##TODO: Make Enroute do something! it should add to the enroute table
+def offer_ride(date,driver,seats,price,desc,src,dst,cno,enroute):
+    ##TODO Check that cno belongs to the driver
+    ##Needed for spec 1
+    offer_ride=     '''
+                    INSERT INTO rides(rno, price, rdate, seats, lugDesc, src, dst, driver, cno) VALUES
+                        (:rno,:price,:date,:seats,:desc,:src,:dst,:driver,:cno);
+                    '''
+    cursor.execute(send_message,{"rno":rno,"price":price,"date":date,"seats":seats,"desc":desc,"src":src,"dst":dst,"driver":driver,"cno",cno});
+    return
+
+def get_locations_by_location_code(lCode):
+    get_locations =     '''
+                        SELECT * FROM locations WHERE lcode = ':lcode';
+                        '''
+    cursor.execute(get_locations,{"lcode":lCode});
+    return
+
+def get_locations_by_keyword(keyword):
+    get_locations =     '''
+                        SELECT * FROM locations WHERE city IS LIKE '%:keyword%'
+                        UNION
+                        SELECT * FROM locations WHERE prov IS LIKE '%:keyword%'
+                        UNION
+                        SELECT * FROM locations WHERE address IS LIKE '%:keyword%';
+                        '''
+    cursor.execute(get_locations,{"keyword":keyword});
+    return
+
+def get_rides_by_cityname():
+
+    return
+
+
+def search_for_rides():
+
+    return
+
+def post_ride_request(date, pLoc, dLoc, amount, rid, email):
+    #Needed for Spec 4
+    post_ride =     '''
+                    INSERT INTO requests(rid, email, rdate, pickup, dropoff, amount) VALUES
+                        (:rid,:email,:date,:pLoc,:dLoc,:amount);
+                    '''
+    cursor.execute(post_ride,{"rid":rid,"email":email,"date":date,"pLoc":pLoc,"dLoc":dLoc,"amount":amount});
+    return
+
+def get_ride_requests_by_email(date, pLoc, dLoc, amount, rid, email):
+    #Needed for Spec 5
+    get_rides =     '''
+                    SELECT * FROM requests WHERE email = ':email';
+                    '''
+    cursor.execute(get_rides,{"email":email});
+    return
+
+
+def delete_ride_by_id(rid):
+    #Needed for Spec 5
+    delete_rides =      '''
+                        DELETE FROM requests WHERE rid = ':rid';
+                        '''
+    cursor.execute(delete_rides,{"rid":rid});
+    return
+
+def get_requests_by_location(lCode):
+    ##TODO: see spec number 5 for details
+    return
+
+def remove_booking_by_id(bno):
+    ##Needed for Spec #3
+    delete_booking =    '''
+                        DELETE FROM bookings WHERE bno = ':bno';
+                        '''
+    cursor.execute(delete_rides,{"bno":bno});
+    return
+
+def get_rides_by_member(driver):
+    ##Needed for Spec #3
+    get_rides = '''
+                SELECT b.* FROM rides r, bookings b,
+                WHERE r.driver=:driver
+                AND r.rno=b.rno;
+                '''
+    cursor.execute(get_rides,{"driver":driver});
+    return
+
+def send_message_to_member(email, msgTimestamp, sender, content, rno, seen):
+    ##Needed for Spec #3
+    send_message =     '''
+                    INSERT INTO inbox(email, msgTimestamp, sender, content, rno, seen) VALUES
+                        (:email,:msgTimestamp,:sender,:content,:rno,:seen);
+                    '''
+    cursor.execute(send_message,{"email":email,"msgTimestamp":msgTimestamp,"sender":sender,"content":content,"rno":rno,"seen":seen});
+    return
+
+
+
+
+def main():
+    #######################
+    ## SQL TESTING TODOS ##
+    #######################
+    ##TEST ALL SQL QUERYS##
+    ##POST SUCCESSES HERE##
+    #######################
+    return
+
+if __name__ == "__main__":
+    main()
