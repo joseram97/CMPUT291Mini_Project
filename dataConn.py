@@ -103,30 +103,53 @@ def offer_ride(date,driver,seats,price,desc,src,dst,cno,enroute):
                         (:rno,:price,:date,:seats,:desc,:src,:dst,:driver,:cno);
                     '''
     cursor.execute(send_message,{"rno":rno,"price":price,"date":date,"seats":seats,"desc":desc,"src":src,"dst":dst,"driver":driver,"cno":cno});
+    connection.commit()
     return
 
 def get_locations_by_location_code(lCode):
     get_locations =     '''
-                        SELECT * FROM locations WHERE lcode = ':lcode';
+                        SELECT * FROM locations WHERE lcode = :lcode;
                         '''
     cursor.execute(get_locations,{"lcode":lCode});
-    return
+    connection.commit()
+    return cursor.fetchone()
 
 def get_locations_by_keyword(keyword):
+    keyword = '%'+keyword+'%'
     get_locations =     '''
-                        SELECT * FROM locations WHERE city IS LIKE '%:keyword%'
+                        SELECT * FROM locations WHERE city LIKE :keyword
                         UNION
-                        SELECT * FROM locations WHERE prov IS LIKE '%:keyword%'
+                        SELECT * FROM locations WHERE prov LIKE :keyword
                         UNION
-                        SELECT * FROM locations WHERE address IS LIKE '%:keyword%';
+                        SELECT * FROM locations WHERE address LIKE :keyword;
                         '''
     cursor.execute(get_locations,{"keyword":keyword});
-    return
+    connection.commit()
+    return cursor.fetchall()
 
 
-def search_for_rides():
+def search_for_rides(key1,key2,key3):
+    key1 = '%'+key1+'%'
+    key2 = '%'+key2+'%'
+    key3 = '%'+key3+'%'
 
-    return
+
+    ride_search =   '''
+                    SELECT * FROM locations WHERE city LIKE :key1
+                    OR city LIKE :key2
+                    OR city LIKE :key3
+                    UNION
+                    SELECT * FROM locations WHERE prov LIKE :key1
+                    OR prov LIKE :key2
+                    OR prov LIKE :key3
+                    UNION
+                    SELECT * FROM locations WHERE address LIKE :key1
+                    OR address LIKE :key2
+                    OR address LIKE :key3;
+                    '''
+    cursor.execute(ride_search,{"key1":key1,"key2":key2,"key3":key3});
+    connection.commit()
+    return cursor.fetchall()
 
 def post_ride_request(date, pLoc, dLoc, amount, rid, email):
     #Needed for Spec 4
@@ -135,23 +158,26 @@ def post_ride_request(date, pLoc, dLoc, amount, rid, email):
                         (:rid,:email,:date,:pLoc,:dLoc,:amount);
                     '''
     cursor.execute(post_ride,{"rid":rid,"email":email,"date":date,"pLoc":pLoc,"dLoc":dLoc,"amount":amount});
+    connection.commit()
     return
 
 def get_ride_requests_by_email(date, pLoc, dLoc, amount, rid, email):
     #Needed for Spec 5
     get_rides =     '''
-                    SELECT * FROM requests WHERE email = ':email';
+                    SELECT * FROM requests WHERE email = :email;
                     '''
     cursor.execute(get_rides,{"email":email});
+    connection.commit()
     return
 
 
 def delete_ride_by_id(rid):
     #Needed for Spec 5
     delete_rides =      '''
-                        DELETE FROM requests WHERE rid = ':rid';
+                        DELETE FROM requests WHERE rid = :rid;
                         '''
     cursor.execute(delete_rides,{"rid":rid});
+    connection.commit()
     return
 
 def get_requests_by_location(lCode):
@@ -161,9 +187,10 @@ def get_requests_by_location(lCode):
 def remove_booking_by_id(bno):
     ##Needed for Spec #3
     delete_booking =    '''
-                        DELETE FROM bookings WHERE bno = ':bno';
+                        DELETE FROM bookings WHERE bno = :bno;
                         '''
     cursor.execute(delete_rides,{"bno":bno});
+    connection.commit()
     return
 
 def get_rides_by_member(driver):
@@ -174,6 +201,7 @@ def get_rides_by_member(driver):
                 AND r.rno=b.rno;
                 '''
     cursor.execute(get_rides,{"driver":driver});
+    connection.commit()
     return
 
 def send_message_to_member(email, msgTimestamp, sender, content, rno, seen):
@@ -183,14 +211,16 @@ def send_message_to_member(email, msgTimestamp, sender, content, rno, seen):
                         (:email,:msgTimestamp,:sender,:content,:rno,:seen);
                     '''
     cursor.execute(send_message,{"email":email,"msgTimestamp":msgTimestamp,"sender":sender,"content":content,"rno":rno,"seen":seen});
+    connection.commit()
     return
 
 def get_car_by_cno(cno):
     get_car =   '''
-                SELECT * FROM cars WHERE cno=':cno';
+                SELECT * FROM cars WHERE cno=:cno;
                 '''
     cursor.execute(get_car,{"cno":cno})
-    return cursor.fetchall()
+    connection.commit()
+    return cursor.fetchone()
 
 def main():
     #######################
@@ -199,8 +229,6 @@ def main():
     ##TEST ALL SQL QUERYS##
     ##POST SUCCESSES HERE##
     #######################
-    connect("a2.db")
-
     return
 
 if __name__ == "__main__":
