@@ -183,8 +183,12 @@ def send_message_to_member(email, msgTimestamp, sender, content, rno, seen):
     cursor.execute(send_message,{"email":email,"msgTimestamp":msgTimestamp,"sender":sender,"content":content,"rno":rno,"seen":seen});
     return
 
-
-
+def get_car_by_cno(cno):
+    get_car =   '''
+                SELECT * FROM cars WHERE cno=':cno';
+                '''
+    cursor.execute(get_car,{"cno":cno})
+    return cursor.fetchall()
 
 def main():
     #######################
