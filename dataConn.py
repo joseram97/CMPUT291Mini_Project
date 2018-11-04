@@ -1,3 +1,5 @@
+import sqlite3
+
 #this is the data class that will hold all of the information for the
 # mini-project
 
@@ -100,7 +102,7 @@ def offer_ride(date,driver,seats,price,desc,src,dst,cno,enroute):
                     INSERT INTO rides(rno, price, rdate, seats, lugDesc, src, dst, driver, cno) VALUES
                         (:rno,:price,:date,:seats,:desc,:src,:dst,:driver,:cno);
                     '''
-    cursor.execute(send_message,{"rno":rno,"price":price,"date":date,"seats":seats,"desc":desc,"src":src,"dst":dst,"driver":driver,"cno",cno});
+    cursor.execute(send_message,{"rno":rno,"price":price,"date":date,"seats":seats,"desc":desc,"src":src,"dst":dst,"driver":driver,"cno":cno});
     return
 
 def get_locations_by_location_code(lCode):
@@ -197,6 +199,8 @@ def main():
     ##TEST ALL SQL QUERYS##
     ##POST SUCCESSES HERE##
     #######################
+    connect("a2.db")
+
     return
 
 if __name__ == "__main__":
