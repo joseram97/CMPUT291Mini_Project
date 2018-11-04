@@ -121,10 +121,6 @@ def get_locations_by_keyword(keyword):
     cursor.execute(get_locations,{"keyword":keyword});
     return
 
-def get_rides_by_cityname():
-
-    return
-
 
 def search_for_rides():
 
