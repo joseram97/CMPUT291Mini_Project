@@ -22,10 +22,7 @@ def connect(path):
 
 
 
-##TODO: Make Enroute do something! it should add to the enroute table
 def offer_ride(date,driver,seats,price,desc,src,dst,cno,enroute):
-    ##TODO Check that cno belongs to the driver
-    ##TODO: enroute can be a list of locations. Need to factor that in
     ##Needed for spec 1
     rno = get_max_ride_id()[0] + 1
     offer_ride=     '''
@@ -109,54 +106,38 @@ def search_for_rides(listKeys):
 
     ride_search =   '''
                     SELECT DISTINCT r.*
-                    FROM rides r, enroute e, locations l1, locations l2, locations l3
-                    WHERE r.rno = e.rno
-                    AND e.lcode = l3.lcode
-                    AND r.src = l1.lcode
-                    AND r.dst = l2.lcode
-                    AND l1.city LIKE :key1
-                    OR l2.city LIKE :key1
-                    OR l3.city LIKE :key1
-                    OR l1.prov LIKE :key1
-                    OR l2.prov LIKE :key1
-                    OR l3.prov LIKE :key1
-                    OR l1.address LIKE :key1
-                    OR l2.address LIKE :key1
-                    OR l3.address LIKE :key1
+                    FROM rides r, enroute e, locations l
+                    WHERE (r.rno = e.rno
+                    AND e.lcode = l.lcode
+                    OR r.src = l.lcode
+                    OR r.dst = l.lcode)
+                    AND (l.city LIKE :key1
+                    OR l.prov LIKE :key1
+                    OR l.address LIKE :key1
+                    OR l.lcode = :key1)
                     INTERSECT
                     SELECT DISTINCT r.*
-                    FROM rides r, enroute e, locations l1, locations l2, locations l3
-                    WHERE r.rno = e.rno
-                    AND e.lcode = l3.lcode
-                    AND r.src = l1.lcode
-                    AND r.dst = l2.lcode
-                    AND l1.city LIKE :key2
-                    OR l2.city LIKE :key2
-                    OR l3.city LIKE :key2
-                    OR l1.prov LIKE :key2
-                    OR l2.prov LIKE :key2
-                    OR l3.prov LIKE :key2
-                    OR l1.address LIKE :key2
-                    OR l2.address LIKE :key2
-                    OR l3.address LIKE :key2
+                    FROM rides r, enroute e, locations l
+                    WHERE (r.rno = e.rno
+                    AND e.lcode = l.lcode
+                    OR r.src = l.lcode
+                    OR r.dst = l.lcode)
+                    AND (l.city LIKE :key2
+                    OR l.prov LIKE :key2
+                    OR l.address LIKE :key2
+                    OR l.lcode = :key2)
                     INTERSECT
                     SELECT DISTINCT r.*
-                    FROM rides r, enroute e, locations l1, locations l2, locations l3
-                    WHERE r.rno = e.rno
-                    AND e.lcode = l3.lcode
-                    AND r.src = l1.lcode
-                    AND r.dst = l2.lcode
-                    AND l1.city LIKE :key3
-                    OR l2.city LIKE :key3
-                    OR l3.city LIKE :key3
-                    OR l1.prov LIKE :key3
-                    OR l2.prov LIKE :key3
-                    OR l3.prov LIKE :key3
-                    OR l1.address LIKE :key3
-                    OR l2.address LIKE :key3
-                    OR l3.address LIKE :key3;
+                    FROM rides r, enroute e, locations l
+                    WHERE (r.rno = e.rno
+                    AND e.lcode = l.lcode
+                    OR r.src = l.lcode
+                    OR r.dst = l.lcode)
+                    AND (l.city LIKE :key3
+                    OR l.prov LIKE :key3
+                    OR l.address LIKE :key3
+                    OR l.lcode = :key3);
                     '''
-
     cursor.execute(ride_search,{"key1":key1,"key2":key2,"key3":key3});
     connection.commit()
     return cursor.fetchall()
@@ -286,7 +267,7 @@ def book_member_for_ride_by_driver(rno,email,seatsBooked,cost,src,dst,driver):
 
 def send_message_to_member(email, sender, content, rno):
     ##Needed for Spec #3
-    msgTimestamp = datetime.now().strftime('%Y-%m-%d');
+    msgTimestamp = datetime.now();
     seen = 'N'
     send_message =      '''
                         INSERT INTO inbox(email, msgTimestamp, sender, content, rno, seen) VALUES
