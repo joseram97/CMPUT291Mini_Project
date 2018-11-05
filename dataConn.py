@@ -152,11 +152,11 @@ def delete_ride_request_by_id(rid):
 def get_requests_by_location(lCode):
     lCodeP = '%'+lCode+'%'
     get_req =     '''
-                    SELECT DISTINCT r.rid, r.pickup, r.dropoff
+                    SELECT DISTINCT *
                     FROM requests r
                     WHERE r.pickup = :lcode
                     UNION
-                    SELECT DISTINCT r.rid, r.pickup, r.dropoff
+                    SELECT DISTINCT *
                     FROM requests r
                     WHERE r.pickup IN (SELECT lcode
                                        FROM locations

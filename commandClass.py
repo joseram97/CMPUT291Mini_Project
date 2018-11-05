@@ -114,20 +114,13 @@ class command:
     def get_locations_by_keyword(self,key):
         return get_locations_by_keyword(key)
 
-def main():
-    c = command("./a2.db")
-    print(c.check_location("cntr1"))
-    print(c.check_location("cntr9"))
+    def get_requests_by_location(self,key):
+        return get_requests_by_location(key)
 
-    ##c.post_new_ride_request("2018-02-01","cntr1","cntr2","12","don@mayor.yeg")
-    ##c.offer_ride("2018-02-01","don@mayor.yeg",4,12,"desc","cntr1","cntr2",4,[])
-
-    ##WORKING
-    ##print("Testing location checks: ")
-    ##print(c.checkLocationCode('cntr1'))
-    for row in get_requests_by_location("nrth1"):
-        print("{0}: {1} {2}".format(row[0],row[1],row[2]))
-    return
-
-if __name__ == "__main__":
-    main()
+    def send_message_to_member(self, email,sender,content,rno):
+        try:
+            send_message_to_member(email,sender,content,rno)
+            print("message sent")
+        except:
+            print("given rno or email is not valid. Please try again")
+        return

@@ -219,6 +219,17 @@ def listSelection(resultList, functionType):
         print("'q' and press ENTER. To message the driver of a ride, enter in the")
         print("number of the RIDE SELECTION and type in a message. After message, ")
         print("the system will take you back to the main menu.")
+    elif functionType == "SEARCH":
+        if type(resultList) is type(None):
+            print("No locations matching {0}".format(loc))
+            return
+        option = doRequestSearch(resultList)
+        if option is not "":
+            row = option
+            content = input("What would you like to send to the user:")
+            rnum = input("Please enter the VALID rno you want to message about:")
+            cmd.send_message_to_member(row[1],user[0],content,rnum)
+
     elif functionType == "REQUEST":
         print("-------------------------------------------------------------------------")
         print("RIDE REQUEST INFORMATION")
@@ -344,6 +355,45 @@ def listSelection(resultList, functionType):
 #            print("Ride Number: {0}\nSeats available: {1}".format(ride[0], ride[1]))
 #            print("////////////////////////////////////////////////////////")
 #        i = i + 1
+
+    return
+
+def doRequestSearch(l):
+    i = 0
+    max = len(l)
+    print("----------Requested Rides Search Results-----------")
+    print("Hit the number to make a selection to being messaging a user:")
+
+    while(True):
+        flag = False
+        try:
+            print("1 - rid:{0}, email:{1}, rdate:{2}, pickup:{3}, dropoff:{4}, amount:{5}".format(l[i][0],l[i][1],l[i][2],l[i][3],l[i][4],l[i][5]))
+            print("2 - rid:{0}, email:{1}, rdate:{2}, pickup:{3}, dropoff:{4}, amount:{5}".format(l[i+1][0],l[i+1][1],l[i+1][2],l[i+1][3],l[i+1][4],l[i+1][5]))
+            print("3 - rid:{0}, email:{1}, rdate:{2}, pickup:{3}, dropoff:{4}, amount:{5}".format(l[i+2][0],l[i+2][1],l[i+2][2],l[i+2][3],l[i+2][4],l[i+2][5]))
+            print("4 - rid:{0}, email:{1}, rdate:{2}, pickup:{3}, dropoff:{4}, amount:{5}".format(l[i+3][0],l[i+3][1],l[i+3][2],l[i+3][3],l[i+3][4],l[i+3][5]))
+            print("5 - rid:{0}, email:{1}, rdate:{2}, pickup:{3}, dropoff:{4}, amount:{5}".format(l[i+4][0],l[i+4][1],l[i+4][2],l[i+4][3],l[i+4][4],l[i+4][5]))
+        except:
+            flag = True
+        print("6 - Next Five Choices")
+        print("7 - Exit")
+        inp = input("Make a selection: ")
+        if(inp is "6"):
+            if flag:
+                i = 0
+            else:
+                i+=5
+        if(inp is "7"):
+            return ""
+        if(inp is "1"):
+            return l[i]
+        if(inp is "2"):
+            return l[i+1]
+        if(inp is "3"):
+            return l[i+2]
+        if(inp is "4"):
+            return l[i+3]
+        if(inp is "5"):
+            return l[i+4]
 
     return
 
@@ -626,6 +676,7 @@ def searchDeleteRequestUI():
             # get all ride requests
             print("Showing all ride requests...\n")
             rideRequests = cmd.get_ride_requests_by_email(user[0])
+            listSelection(rideRequests, "REQUEST")
             break
         elif userInput == "2":
             # search for desired ride requests
@@ -633,7 +684,8 @@ def searchDeleteRequestUI():
             print("In order to search for ride requests, you will need to provide")
             print("a location code or city name.\n")
             location = input("Provide the location: ")
-            #rideRequests = dataConn.get_requests_by_location(location)
+            rideRequests = cmd.get_requests_by_location(location)
+            listSelection(rideRequests, "SEARCH")
             break
         elif userInput == "3":
             # exit out of the function
@@ -643,7 +695,6 @@ def searchDeleteRequestUI():
             print("Not a valid selection! Try again...")
 
     # print all of the ride requests from the user
-    listSelection(rideRequests, "REQUEST")
 
 
     return
