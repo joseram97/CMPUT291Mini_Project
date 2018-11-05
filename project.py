@@ -12,10 +12,8 @@ from commandClass import command
 
 #these will be the global variables throughout the application
 username = None
-
 connection = None
 cursor = None
-cmd = None
 
 def checkInput(promptString, fieldList, optional = False):
     # this function will check if a field has been inputted and will be
@@ -37,6 +35,7 @@ def checkInput(promptString, fieldList, optional = False):
     return True
 
 def initializeData():
+    global cmd
     # this will set the database connection
     print("Please enter the database path:")
     path = input("Database Path: ")
@@ -49,12 +48,19 @@ def initializeData():
 
 # The following functions are for the login portion of the application
 #--------------------------LOGIN------------------------------------
-def getUserInformation(password):
+def getUserInformation(username, password):
+    global user
     # get all of the user information from the database and assign it to the
     # essentially this is where we fill up the database
     query = "query string will be here"
-    # table = dataConn.query(query) NOTE: Need curtis functionality
-    return True # this is for now until I put in Curtis's functions
+    userData = cmd.login_user(username,password)
+    if userData is None:
+        print("Invalid username and password.. Redirected back to login")
+        loginPrompt()
+        return False
+    else:
+        user = (userData[0],userData[1],userData[2],userData[3])
+        return True
 
 def registerUser():
     # the user wants to be registered into the database
@@ -91,7 +97,7 @@ def loginUser():
     print("Please type in your Username and Password...")
     username = input("Username(e-mail): ")
     password = input("Password: ")
-    return getUserInformation(password)
+    return getUserInformation(username, password)
 
 
 def loginPrompt():

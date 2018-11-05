@@ -18,6 +18,10 @@ class command:
         post_ride_request(date,pLoc,dLoc,amount,rid,email)
         return
 
+    def login_user(self,email,pwd):
+        user = check_login(email,pwd)
+        return user
+
     ##3 Keywords and Number of keywords passed!
     ## Leave key2,3 as "!" (STRING) if unused "!" will never match a location and act as if it
     ## does not exist
