@@ -222,7 +222,7 @@ def offerRideUI():
     print("Please fill out the prompts below")
     print("[REQUIRED]")
     inputList = []
-    promptReqList = ["Date (dd/mm/yyyy): ", "Number of seats: ", "Price per seat: $",
+    promptReqList = ["Date (yyyy-mm-dd): ", "Number of seats: ", "Price per seat: $",
                     "Luggage Description (Don't press enter till done): ",
                     "Source location (e.g. City Name, Location Code): ",
                     "Destination Location: "]
@@ -362,21 +362,16 @@ def searchDeleteRequestUI():
 
 def generateMessages():
     # generate all unseen messages from the user
-    # TODO: query all of the message that are unseen (<> y)
-    unseenMessages = None #TODO: dataConn.getMessages(username)
-
-    # display all of the messages to the user
-    if not unseenMessages:
-        print("No unseen messages!...\n")
-        return
     #print all of the messages
-    for message in unseenMessages:
-        print("--------------------------------------------------------------------")
-        print("Email from: {}").format(message["sender"])
-        print("Date: {}").format(message["msgTimestamp"])
-        print("Ride #: {}\n").format(message["rno"])
-        print("Content: {}").format(message["content"])
-        print("--------------------------------------------------------------------")
+    mes = cmd.get_unseen_messages(user[0])
+    if(len(mes)>0):
+        for row in mes:
+            print("--------------------------------------------------------------------")
+            print("Email from: {0}".format(row[0]))
+            print("Date: {0}".format(row[1]))
+            print("Ride #: {0}\n".format(row[4]))
+            print("Content: {0}".format(row[3]))
+            print("--------------------------------------------------------------------")
     return
 
 def runApp():

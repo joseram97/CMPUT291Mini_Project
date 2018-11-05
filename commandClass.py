@@ -28,6 +28,12 @@ class command:
         except:
             raise Exception("Non-Unique email")
 
+    def get_unseen_messages(self,email):
+        ret = get_unseen_messages_by_email(email)
+        set_messages_to_seen(email)
+        return ret
+
+
 
     ##3 Keywords and Number of keywords passed!
     ## Leave key2,3 as "!" (STRING) if unused "!" will never match a location and act as if it

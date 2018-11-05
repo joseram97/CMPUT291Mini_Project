@@ -230,16 +230,26 @@ def send_message_to_member(email, sender, content, rno):
     connection.commit()
     return
 
-def set_message_to_seen(email,msgTimestamp):
+def set_messages_to_seen(email):
     set_seen =  '''
                 UPDATE inbox
                 SET seen='Y'
-                WHERE email=:email
-                AND msgTimestamp=:msgTimestamp;
+                WHERE email=:email;
                 '''
-    cursor.execute(set_seen,{"email":email,"msgTimestamp":msgTimestamp});
+    cursor.execute(set_seen,{"email":email});
     connection.commit()
     return
+
+def get_unseen_messages_by_email(email):
+    get_unseen = '''
+                SELECT *
+                FROM inbox
+                WHERE email=:email
+                AND seen = 'N';
+                '''
+    cursor.execute(get_unseen,{"email":email});
+    connection.commit()
+    return cursor.fetchall()
 
 def get_car_by_cno(cno):
     get_car =   '''
