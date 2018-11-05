@@ -1,5 +1,6 @@
 import sqlite3
 import datetime
+import os
 #this is the data class that will hold all of the information for the
 # mini-project
 
@@ -10,7 +11,8 @@ cursor = None
 
 def connect(path):
     global connection, cursor
-
+    if not os.path.isfile(path):
+        raise Exception("Invalid path")
     connection = sqlite3.connect(path)
     connection.row_factory = sqlite3.Row
     cursor = connection.cursor()
