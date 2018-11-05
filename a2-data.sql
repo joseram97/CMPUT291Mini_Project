@@ -113,7 +113,9 @@ insert into rides values
         (40, 50, '2018-09-08', 1, 'Large Bag', 'cntr2', 'yyc1', 'don@mayor.yeg', 3),
         (41, 100, '2018-11-05', 2, 'Large Bag', 'cntr1', 'sk1', 'don@mayor.yeg', 3),
         (42, 150, '2018-11-05', 2, 'Large Bag', 'van2', 'nrth2', 'don@mayor.yeg', 3),
-        (43, 10, '2018-10-14', 4, 'Large Bag', 'sth4', 'yyc1', 'jane_doe@abc.ca', 1);
+        (43, 10, '2018-10-14', 4, 'Large Bag', 'sth4', 'yyc1', 'jane_doe@abc.ca', 1),
+        (44, 150, '2018-07-24', 2, 'Large Bag', 'nrth1', 'cntrl1', 'don@mayor.yeg', 3),
+        (45, 100, '2018-04-27', 4, 'Medium Bag', 'cntr3', 'cntr2', 'mess@marky.mark', 6);
 
 -- |bno|email|rno|cost|seats|pickup|dropoff|
 insert into bookings values
@@ -147,3 +149,18 @@ insert into requests values
         (7, 'mess@marky.mark', '2018-10-11', 'nrth2', 'sth3', 1),
         (8, 'mess@marky.mark', '2018-10-11', 'nrth2', 'sth3', 100),
         (9, 'jane_doe@abc.ca', '2018-04-26', 'cntr3', 'cntr2', 10);
+
+-- This is the insert of data to the inboxes for members
+-- THIS WAS MADE BY JOSE AND ADDED ON AS EXTRA DATA for Mini-project 1
+-- |email|msgTimeStamp|sender|content|rno|seen|
+insert into inbox values
+        ('mal@serenity.ca', '2018-11-06', 'don@mayor.yeg', 'Your ride for rno:[41] is booked!', 41, 'n'),
+        ('nellie@five.gov', '2018-11-06', 'don@mayor.yeg', 'Your ride for rno:[42] is booked!', 42, 'n'),
+        ('connor@oil.com', '2018-09-09', 'don@mayor.yeg', "Your booking was cancelled for rno:[40]", 40, 'n'),
+        ('connor@oil.com', '2018-12-13', 'the99@oil.com', "Your booking was cancelled for rno:[20]", 20, 'n'),
+        ('connor@oil.com', '2018-11-02', 'the99@oil.com', "Your ride for rno:[1] is booked!", 1, 'n'),
+        ('nellie@five.gov', '2018-09-08', 'don@mayor.yeg', 'Your booking was cancelled for rno:[39]', 39, 'n'),
+        ('nellie@five.gov', '2018-11-06', 'bob@123.ca', 'Your booking was cancelled for rno:[27]', 27, 'n'),
+        ('nellie@five.gov', '2018-11-06', 'bob@123.ca', 'Your booking was cancelled for rno:[28]', 28, 'n'),
+        ('darryl@oil.com', '2018-07-24', 'don@mayor.yeg', 'Please see rno:[44] to book! Its available!', 44, 'n'),
+        ('jane_doe@abc.ca', '2018-04-27', 'mess@marky.mark', 'Please see rno:[45] to book! Its available!', 45, 'n')
