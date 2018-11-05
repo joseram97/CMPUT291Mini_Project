@@ -75,6 +75,17 @@ class command:
         remove_booking_by_id(bno,email,sender,rno)
         return
 
+    def book_ride_for_member_by_driver(self,email,rno,seats,cost,src,dst,driver):
+        book_member_for_ride_by_driver(rno,email,seats,cost,src,dst,driver)
+        return
+
+    def check_ride_ownership(self,email,rno):
+        r = check_ride_ownership(email,rno)
+        if type(r) is type(None):
+            return False
+        else:
+            return True
+
     def get_rides_with_available_seats_by_member(self,driver):
         return get_rides_with_available_seats_by_member(driver)
 

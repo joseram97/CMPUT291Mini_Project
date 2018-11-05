@@ -193,7 +193,7 @@ def get_rides_with_available_seats_by_member(driver):
     ##Needed for Spec #3
     ##Gets all FUTURE rides that the person is offering with how many seats remaining
     get_rides = '''
-                SELECT r.rno,(r.seats-SUM(IFNULL(b.seats,0)))
+                SELECT r.rno,(r.seats-IFNULL(SUM(b.seats),0))
                 FROM rides r
                 LEFT OUTER JOIN bookings b
                 ON r.rno=b.rno
@@ -206,15 +206,40 @@ def get_rides_with_available_seats_by_member(driver):
     connection.commit()
     return cursor.fetchall()
 
+def check_ride_ownership(email,rno):
+    get_owner = '''
+                SELECT *
+                FROM rides r
+                WHERE driver=:email
+                AND rno = :rno
+
+                '''
+    cursor.execute(get_owner,{"email":email,"rno":rno});
+    connection.commit()
+    return cursor.fetchone()
+
+
 def book_member_for_ride(rno,email,seatsBooked,cost,src,dst):
     ##Needed for Spec #3
-    bno = get_max_booking_id()[0]
+    bno = get_max_booking_id()[0]+1
     book_member = '''
                 INSERT INTO bookings(bno,email,rno,cost,seats,pickup,dropoff) VALUES
                     (:bno,:email,:rno,:cost,:seats,:src,:dst)
                 '''
-    cursor.execute(book_member,{"bno":bno,"email":email,"rno":rno,"cost":cost,"src":src,"dst":dst});
+    cursor.execute(book_member,{"bno":bno,"email":email,"rno":rno,"cost":cost,"seats":seatsBooked,"src":src,"dst":dst});
     connection.commit()
+    return
+
+def book_member_for_ride_by_driver(rno,email,seatsBooked,cost,src,dst,driver):
+    ##Needed for Spec #3
+    bno = get_max_booking_id()[0]+1
+    book_member = '''
+                INSERT INTO bookings(bno,email,rno,cost,seats,pickup,dropoff) VALUES
+                    (:bno,:email,:rno,:cost,:seats,:src,:dst)
+                '''
+    cursor.execute(book_member,{"bno":bno,"email":email,"rno":rno,"cost":cost,"seats":seatsBooked,"src":src,"dst":dst});
+    connection.commit()
+    send_message_to_member(email,driver,"You have been booked for ride number: {0}".format(rno),rno)
     return
 
 

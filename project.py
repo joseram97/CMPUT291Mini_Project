@@ -232,6 +232,8 @@ def listSelection(resultList, functionType):
         print("RIDE OFFER INFORMATION")
         print("----------Offered rides-------------")
         ret = doOfferBookings(resultList)
+        if ret is not "":
+            bookMemberforDriver(ret[0],ret[1])
     elif functionType == "BOOK":
         print("-------------------------------------------------------------------------")
         print("BOOKINGS INFORMATION")
@@ -337,19 +339,20 @@ def listSelection(resultList, functionType):
 
     return
 
-def doOfferBookings(list):
+def doOfferBookings(l):
     i = 0
-    max = len(list)
-    print("Offered rides:")
-    print("Hit the number to make a selection:")
+    max = len(l)
+    print("----------Offered future rides-----------")
+    print("Hit the number to make a selection to being booking a user:")
+
     while(True):
         flag = False
         try:
-            print("1 - {0} rno: {1}, Available Seats: {2}".format(l[i][0],l[i][1],l[i][2]))
-            print("2 - {0} rno: {1}, Available Seats: {2}".format(l[i+1][0],l[i+1][1],l[i+1][2],l[i+1][3]))
-            print("3 - {0} rno: {1}, Available Seats: {2}".format(l[i+2][0],l[i+2][1],l[i+2][2],l[i+2][3]))
-            print("4 - {0} rno: {1}, Available Seats: {2}".format(l[i+3][0],l[i+3][1],l[i+3][2],l[i+3][3]))
-            print("5 - {0} rno: {1}, Available Seats: {2}".format(l[i+4][0],l[i+4][1],l[i+4][2],l[i+4][3]))
+            print("1 - rno: {0}, Available Seats: {1}".format(l[i][0],l[i][1]))
+            print("2 - rno: {0}, Available Seats: {1}".format(l[i+1][0],l[i+1][1]))
+            print("3 - rno: {0}, Available Seats: {1}".format(l[i+2][0],l[i+2][1]))
+            print("4 - rno: {0}, Available Seats: {1}".format(l[i+3][0],l[i+3][1]))
+            print("5 - rno: {0}, Available Seats: {1}".format(l[i+4][0],l[i+4][1]))
         except:
             flag = True
         print("6 - Next Five Choices")
@@ -361,20 +364,43 @@ def doOfferBookings(list):
             else:
                 i+=5
         if(inp is "7"):
-            break
+            return ""
         if(inp is "1"):
-            return l[i][0]
+            return (l[i][0],l[i][1])
         if(inp is "2"):
-            return l[i+1][0]
+            return (l[i+1][0],l[i+1][1])
         if(inp is "3"):
-            return l[i+2][0]
+            return (l[i+2][0],l[i+2][1])
         if(inp is "4"):
-            return l[i+3][0]
+            return (l[i+3][0],l[i+3][1])
         if(inp is "5"):
-            return l[i+4][0]
+            return (l[i+4][0],l[i+4][1])
 
     return
 
+def bookMemberforDriver(rno,seats):
+    name = input("Please enter member email: ")
+    numSeats = input("Please enter how many seats:")
+    if(int(numSeats) > int(seats)):
+        pr = input("Ride will be overbooked, continue? (y/n):")
+        if pr is not "y":
+            return
+    cost = input("please enter the cost per seat: ")
+    src = input("please enter the pickup: ")
+    if not cmd.check_location(src):
+        print("pickup location does not exist")
+        return
+    dst = input("please enter the dropoff: ")
+    if not cmd.check_location(dst):
+        print("dropoff location does not exist")
+        return
+
+    if not cmd.check_ride_ownership(user[0],rno):
+        print("You do not own this ride and cannot book for it")
+        return
+
+    cmd.book_ride_for_member_by_driver(name,rno,numSeats,cost,src,dst,user[0])
+    return
 
 def offerRideUI():
     # this is the offer ride UI for the user to selection the options from
