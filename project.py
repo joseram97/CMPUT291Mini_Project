@@ -318,7 +318,7 @@ def offerRideUI():
             print("No matching src locations.. restarting")
             offerRideUI()
         else:
-            dstChoice = printFive(l)
+            srcChoice = printFive(l)
 
 
 
@@ -329,7 +329,7 @@ def offerRideUI():
             print("No matching dst locations.. restarting")
             offerRideUI()
         else:
-            srcChoice = printFive(l)
+            dstChoice = printFive(l)
     # get a set of enroute locations
     enroute = []
     i = 1
@@ -436,16 +436,31 @@ def postRideRequestUI():
     print("location, drop off location, and the amount willing to pay for a")
     print("seat.\n")
     print("Please fill in the required fields below:")
-    requestField = ["Date (dd/mm/yyyy): ", "Pick up location: ",
+    requestField = ["Date (yyyy-mm-dd): ", "Pick up location: ",
                     "Drop off location: ", "Amout per seat: $"]
     fieldResults = []
     for prompt in requestField:
         if not checkInput(prompt, fieldResults):
             return
 
+    if not cmd.checkDate(fieldResults[0]):
+        print("Invalid Date")
+        postRideRequestUI()
+    ##Src is not proper loc
+    srcChoice = fieldResults[1]
+    dstChoice = fieldResults[2]
+    if not cmd.check_location(fieldResults[1]):
+        print("No matching src locations.. restarting")
+        postRideRequestUI()
+
+    ##Dst is not proper loc
+    if not cmd.check_location(fieldResults[2]):
+        print("No matching dst locations.. restarting")
+        postRideRequestUI()
+
     # with all of the information, insert it into the database
     print("Posting...")
-    # dataConn.post_ride_request(fieldResults)
+    cmd.post_new_ride_request(fieldResults[0],srcChoice,dstChoice,fieldResults[3],user[0])
     print("Successfully posted ride request! Sending back to main menu...")
     return
 
@@ -522,19 +537,14 @@ def runApp():
     while True:
         if selection == "1":
             offerRideUI()
-            break
         elif selection == "2":
             searchRideUI()
-            break
         elif selection == "3":
             bookMembersUI()
-            break
         elif selection == "4":
             postRideRequestUI()
-            break
         elif selection == "5":
             searchDeleteRequestUI()
-            break
         elif selection == "6":
             print("Logging out of application...")
             break

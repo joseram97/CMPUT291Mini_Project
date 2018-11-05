@@ -179,13 +179,14 @@ def get_bookings_by_driver(driverEmail):
     connection.commit()
     return cursor.fetchall()
 
-def remove_booking_by_id(bno):
+def remove_booking_by_id(bno,email,sender,rno):
     ##Needed for Spec #3
     delete_booking =    '''
                         DELETE FROM bookings WHERE bno = :bno;
                         '''
     cursor.execute(delete_rides,{"bno":bno});
     connection.commit()
+    send_message_to_member(email,sender,"Your booking has been cancelled",rno)
     return
 
 def get_rides_with_available_seats_by_member(driver):
