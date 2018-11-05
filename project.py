@@ -15,6 +15,21 @@ username = None
 connection = None
 cursor = None
 
+def checkInput(promptString, fieldList, optional = False):
+    # this function will check if a field has been inputted and will be
+    # looped until it is not empty
+    userInput = None
+    while True:
+        userInput = input(promptString)
+        if userInput == "EXIT":
+            print("Exiting...\n")
+            return False
+        elif userInput != "" or optional:
+            break
+        print("Field can't be empty")
+    fieldList.append(userInput)
+    return True
+
 def initializeData():
     # this will set the database connection
     print("Please enter the database path:")
@@ -30,7 +45,7 @@ def getUserInformation(password):
     # essentially this is where we fill up the database
     query = "query string will be here"
     # table = dataConn.query(query) NOTE: Need curtis functionality
-    return
+    return True # this is for now until I put in Curtis's functions
 
 def registerUser():
     # the user wants to be registered into the database
@@ -67,35 +82,146 @@ def loginUser():
     print("Please type in your Username and Password...")
     username = input("Username(e-mail): ")
     password = input("Password: ")
-    print("\n")
-    getUserInformation(password)
-    return
+    return getUserInformation(password)
+
 
 def loginPrompt():
     #This will be the first page that the user will see
     print("Hello! Welcome to CMPUT 291 RidesApp!!")
     print("Please select one of the following:\n")
-    print("1 - Login\n2 - Register\n")
+    print("1 - Login\n2 - Register\n3 - Exit")
+
     selection = input("Type in the number: ")
     print("\n")
     # User has selected what they want
     if selection == "1":
         #user has selected that they want to login
-        loginUser()
+        return loginUser()
     elif selection == "2":
         #user wants to register for the application
         if registerUser():
             # get the user to login officially
-            loginUser()
+            return loginUser()
         else:
             #they were unable to register. exit the application
             print("Unable to register. Try again later.")
             print("Exiting application...\n")
+            return False
+    elif selection == "3":
+        print("Exiting application...\n")
+        return False
     return
 #-------------------END LOGIN------------------------------------
 
 #The following functions are for the main application
-def 
+def offerRideUI():
+    # this is the offer ride UI for the user to selection the options from
+    print("OFFER RIDES:\nThis function will allow you to offer a ride as a")
+    print(" driver. You wil be promted to fill in some information to start")
+    print(" offering a ride. You must provide a date, number of seats, ")
+    print("price per seat, luggage description (i.e. what luggage you carry), ")
+    print("source location, and a destination location.")
+    print("There will be an option to add your car number and enroute locations.\n")
+    print("Please fill out the prompts below")
+    print("[REQUIRED]")
+    inputList = []
+    promptReqList = ["Date (dd/mm/yyyy): ", "Number of seats: ", "Price per seat: $",
+                    "Luggage Description (Don't press enter till done): ",
+                    "Source location (e.g. City Name, Location Code): ",
+                    "Destination Location: "]
+    promptOptList = ["Car number: "]
+    for prompt in promptReqList:
+        if not checkInput(prompt, inputList):
+            return
+    print("[OPTIONAL]")
+    print("NOTE: For the optional fields, just leave it blank to skip the field.")
+    print("For the enroute locations, you can enter as many locations as possible, ")
+    print("and to finish, just leave the last location blank.")
+    for prompt in promptOptList:
+        if not checkInput(prompt, inputList, True):
+            return
+
+    # get a set of enroute locations
+    enroute = []
+    i = 1
+    while True:
+        prompt = "Enroute Location[" + Integer.toString(i) + "]"
+        enrouteLocation = input(prompt)
+        if enrouteLocation == "":
+            break
+        enroute.append(enrouteLocation)
+        i = i + 1
+
+    # now that we have all of the information, we query for the rides
+    # TODO: COMPLETE THE OFFER RIDES FUNCTION
+    #offer_ride(inputList[0], inputList[1], inputList[2], inputList[3],
+    #            inputList[4], inputList[5], inputList[6], enroute)
+    print("Successfully added offered ride! Returning to the main menu...\n")
+    return
+
+def searchRideUI():
+    return
+
+def bookMembersUI():
+    return
+
+def postRideRequestUI():
+    return
+
+def searchDeleteRequestUI():
+    return
+
+def generateMessages():
+    # generate all unseen messages from the user
+    # TODO: query all of the message that are unseen (<> y)
+    unseenMessages = None #TODO: dataConn.getMessages(username)
+
+    # display all of the messages to the user
+    if not unseenMessages:
+        print("No unseen messages!...\n")
+        return
+    #print all of the messages
+    for message in unseenMessages:
+        print("--------------------------------------------------------------------")
+        print("Email from: {}").format(message["sender"])
+        print("Date: {}").format(message["msgTimestamp"])
+        print("Ride #: {}\n").format(message["rno"])
+        print("Content: {}").format(message["content"])
+        print("--------------------------------------------------------------------")
+    return
+
+def runApp():
+    print("Succesfully Logged In! Generating unseen messages...\n")
+    # this function will run the main part of the application and their UI
+    # elements
+
+    # the first thing that will be visible is all of the messages that the
+    # user has not seen yet
+    generateMessages()
+
+    while(True):
+        # set up all of the possible options for the user to interact with
+        print("The following selections may be chosen to proceed within the app:")
+        print("1 - Offer a ride\n2 - Search for a ride\n3 - Book members or " +
+              "cancel bookings\n4 - Post a ride request\n5 - Search and delete" +
+              " ride requests\n6 - Exit application\n")
+        selection = input("Please type in the desired selection(number): ")
+        print("\n")
+        if selection == "1":
+            offerRideUI()
+        elif selection == "2":
+            searchRideUI()
+        elif selection == "3":
+            bookMembersUI()
+        elif selection == "4":
+            postRideRequestUI()
+        elif selection == "5":
+            searchDeleteRequestUI()
+        elif selection == "6":
+            print("Logging out of application...")
+            break
+
+    return
 
 def main():
     #the main code for the software applications
@@ -103,7 +229,13 @@ def main():
     initializeData()
 
     # show the login prompt
-    loginPrompt()
+    if not (loginPrompt()):
+        return
+
+    # the login was succesful
+    # run the main portion of the code
+    runApp()
+    return
 
 if __name__ == "__main__":
     main()

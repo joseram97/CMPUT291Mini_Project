@@ -97,6 +97,7 @@ def insert_data():
 ##TODO: Make Enroute do something! it should add to the enroute table
 def offer_ride(date,driver,seats,price,desc,src,dst,cno,enroute):
     ##TODO Check that cno belongs to the driver
+    ##TODO: enroute can be a list of locations. Need to factor that in
     ##Needed for spec 1
     rno = get_max_ride_id()[0] + 1
     offer_ride=     '''
