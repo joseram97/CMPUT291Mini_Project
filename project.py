@@ -26,7 +26,7 @@ def checkInput(promptString, fieldList, optional = False):
             return False
         elif userInput != "" or optional:
             break
-        elif userInput == "Date (dd/mm/yyyy): ":
+        elif userInput == "Date (yyyy-mm-dd): ":
             #check that the format is correct
             #TODO: check format is correct
             break
@@ -272,89 +272,6 @@ def listSelection(resultList, functionType):
             op = int(option)
             row = resultList[op]
             cmd.cancel_booking_by_bno(row[0],row[1],user[0],row[2]) ##remove booking
-
-
-
-
-
-
-
-#    for ride in resultList:
-#        # display all of the ride information
-#        if i%5 == 0:
-#            while True:
-#                displayMore = input("[MORE?]:")
-#                if displayMore == "q":
-#                    print("Taking you back to main menu...")
-#                    return
-#                elif displayMore == "":
-#                    break
-#                selection = None
-#                try:
-#                    selection = int(displayMore)
-#                    if selection > i:
-#                        print("Not a valid selection")
-#                    else:
-#                        if functionType == "RIDE":
-#                            sendMessage(resultList[selection-1][7],
-#                                        username, resultList[selection-1][0])
-#                        elif functionType == "REQUEST":
-#                            # the request must be deleted
-#                            sure = input("Are you sure? (y/n): ")
-#                            if sure == "y":
-#                                print("Deleting request...")
-#                                # TODO: dataConn.delete_ride_by_id(resultList[selection-1][0])
-#                                print("Request deleted. Back to main menu...")
-#                                return
-#                            elif sure == "n":
-#                                continue
-#                        elif functionType == "BOOK":
-#                            sure = input("Are you sure you want to cancel? (y/n): ")
-#                            if sure == "y":
-#                                cancelBooking(resultList[selection-1])
-#                            elif sure == "n":
-#                                continue
-#                        elif functionType == "OFFER":
-                            # the user wants to book a member to one of their
-                            # offered rides
-#                            bookMember(resultList[selection-1])
-#                        return
-#                except ValueError:
-#                    print("Not a number")
-
-#        if functionType == "RIDE":
-        # user wants to see more
-#            print("///////////////////////////////////////////////////////")
-#            print("RIDE SELECTION: " + str(i+1))
-#            print("Ride Number: {0}\nRide price: {1}".format(ride[0], ride[1]))
-#            print("Date: {0}\nNumber of seats: {1}".format(ride[2], ride[3]))
-#            print("Luggage Description: {0}\nStart location: {1}".format(ride[4], ride[5]))
-#            print("End Location: {0}\nDriver: {1}".format(ride[6], ride[7]))
-#            print("CAR INFORMATION")
-#            print("Car number: {0}\nMake: {1}\nModel: {2}").format(ride[8], ride[9], ride[10])
-#            print("Year: {0}\nSeats: {1}\nOwner: {2}").format(ride[11], ride[12], ride[13])
-#            print("////////////////////////////////////////////////////////")
-#        elif functionType == "REQUEST":
-#            print("///////////////////////////////////////////////////////")
-#            print("REQUEST SELECTION: " + str(i+1))
-#            print("Ride ID: {}\nEmail: {}").format(ride[0], ride[1])
-#            print("Date: {}\nPick up location: {}").format(ride[2], ride[3])
-#            print("Drop off location: {}\nAmount: {}").format(ride[4], ride[5])
-#            print("////////////////////////////////////////////////////////")
-#        elif functionType == "BOOK":
-#            print("///////////////////////////////////////////////////////")
-#            print("BOOKING SELECTION: " + str(i+1))
-#            print("Booking Number: {}\nEmail: {}").format(ride[0], ride[1])
-#            print("Ride Number: {}\nCost: {}").format(ride[2], ride[3])
-#            print("Number of seats booked: {}\nPickup Location: {}").format(ride[4], ride[5])
-#            print("Destination Location: {}").format(ride[6])
-#            print("////////////////////////////////////////////////////////")
-#        elif functionType == "OFFER":
-#            print("///////////////////////////////////////////////////////")
-#            print("OFFERED RIDE SELECTION: " + str(i+1))
-#            print("Ride Number: {0}\nSeats available: {1}".format(ride[0], ride[1]))
-#            print("////////////////////////////////////////////////////////")
-#        i = i + 1
 
     return
 
@@ -626,7 +543,7 @@ def postRideRequestUI():
     # The user will be able to post a ride request that they want a driver to
     # start offering
     print("REQUEST A RIDE:\nThis function will allow you to post a ride request")
-    print("on the application. You must provide a date(dd/mm/yyyy), pick up")
+    print("on the application. You must provide a date(yyyy-mm-dd), pick up")
     print("location, drop off location, and the amount willing to pay for a")
     print("seat.\n")
     print("Please fill in the required fields below:")
@@ -637,6 +554,7 @@ def postRideRequestUI():
         if not checkInput(prompt, fieldResults):
             return
 
+    print(fieldResults[0])
     if not cmd.checkDate(fieldResults[0]):
         print("Invalid Date")
         postRideRequestUI()
@@ -728,7 +646,7 @@ def runApp():
         print("The following selections may be chosen to proceed within the app:")
         print("1 - Offer a ride\n2 - Search for a ride\n3 - Book members or " +
               "cancel bookings\n4 - Post a ride request\n5 - Search and delete" +
-              " ride requests\n6 - Exit application\n")
+              " ride requests\n6 - Exit application\n7 - Log out")
         selection = input("Please type in the desired selection(number): ")
         if selection == "1":
             offerRideUI()
@@ -741,8 +659,12 @@ def runApp():
         elif selection == "5":
             searchDeleteRequestUI()
         elif selection == "6":
-            print("Logging out of application...")
+            print("Exiting out of application...")
             break
+        elif selection == "7":
+            print("Logging out.. restaring app")
+            user = None
+            main()
         else:
             print("Invalid selection. Try again...")
 

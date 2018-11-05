@@ -56,14 +56,20 @@ class command:
             print("Improper date format, try again");
 
 
-        offer_ride(date,driver,seats,price,lugDesc,src,dst,cno,enroute)
+        rno = offer_ride(date,driver,seats,price,lugDesc,src,dst,cno,enroute)
+
+        for e in enroute:
+            try:
+                add_enroute(e,rno)
+            except:
+                print("Failed to add enroute: {0} is not a valid destination code".format(e))
         return
 
     ##PROPER FORMAT: YYYY-MM-DD
     ##FALSE IF NOT THIS FORMAT
     def checkDate(self, date):
         try:
-            match = datetime.datetime.strptime(date,"%Y-%m-%d")
+            match = datetime.strptime(date,"%Y-%m-%d")
             return True
         except:
             return False
@@ -124,3 +130,15 @@ class command:
         except:
             print("given rno or email is not valid. Please try again")
         return
+
+
+def main():
+    c = command("./a2.db")
+    print(c.checkDate("2018-02-01"))
+
+    for row in search_for_rides(["Calgary","Edmonton","West"]):
+        print("rno:{0}, dst:{1}, src:{2}".format(row[0],row[1],row[2]))
+    return
+
+if __name__ == "__main__":
+    main()
