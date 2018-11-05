@@ -133,6 +133,7 @@ def sendMessage(driver, userEmail, rno):
     print("Message Content: ")
     messageContent = ""
     while True:
+        ##Get Message
         line = input()
         if line == "":
             print("Sending the message...")
@@ -192,9 +193,6 @@ def bookMember(rideOffer):
 
     # all the inputs are gathered and must be inserted into the database
     print("Booking member [{}] to rno [{}]...").format(inputResults[0], rideOffer[0])
-    # dataConn.book_member_for_ride(rideOffer[0], inputResults[0],
-    #                               inputResults[1], inputResults[2], inputResults[3],
-    #                               inputResults[4])
     print("Member is now booked! Returning to main menu...")
     return
 
@@ -214,19 +212,24 @@ def listSelection(resultList, functionType):
         if type(resultList) is type(None):
             print("No rides matching")
             return
+        ##print 5 lines.. and get one from user
         option = doRideSearch(resultList)
         if option is not "":
             row = option
+            #send message
             content = input("What would you like to send to the user:")
             rnum = row[0]
             cmd.send_message_to_member(row[7],user[0],content,rnum)
     elif functionType == "SEARCH":
+        #if empty no matches
         if type(resultList) is type(None):
             print("No locations matching {0}".format(loc))
             return
+        ##print 5.. get from user
         option = doRequestSearch(resultList)
         if option is not "":
             row = option
+            ##send message
             content = input("What would you like to send to the user:")
             rnum = input("Please enter the VALID rno you want to message about:")
             cmd.send_message_to_member(row[1],user[0],content,rnum)
@@ -237,6 +240,7 @@ def listSelection(resultList, functionType):
         print("All ride request information will be shown below.")
         print("To delete a request, enter the request index (NOT rid) in the input")
         i = 0
+        ##print requests
         for row in resultList:
             print("{0} -- rid:{1}, rdate:{2}, pickup:{3}, dropoff:{4}, cost:{5}".format(i,row[0],row[2],row[3],row[4],row[5]))
             i += 1
@@ -247,7 +251,7 @@ def listSelection(resultList, functionType):
             op = int(option)
             row = resultList[op]
             cmd.delete_ride_request_by_id(row[0])
-        print("Booking cancelled.")
+            print("Booking cancelled.")
     elif functionType == "OFFER":
         print("-------------------------------------------------------------------------")
         print("RIDE OFFER INFORMATION")
@@ -502,12 +506,17 @@ def offerRideUI():
 
     if inputList[-1] is "":
         try:
-            inputList[-1] = get_car_by_driver(user[0])
+            inputList[-1] = cmd.get_car_by_driver(user[0])
+            if type(inputList[-1]) is type(None):
+                print("you do not own any vehicles!")
+                runApp()
+                return
         except:
             print("you do not own any vehicles!")
             runApp()
+            return
 
-
+    print(inputList[-1])
     if not cmd.check_car_ownership(inputList[-1],user[0]):
         print("You do not own this vehicle")
         return
