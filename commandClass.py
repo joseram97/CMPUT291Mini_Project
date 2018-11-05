@@ -89,6 +89,12 @@ class command:
     def get_rides_with_available_seats_by_member(self,driver):
         return get_rides_with_available_seats_by_member(driver)
 
+    def delete_ride_request_by_id(self,rid):
+        return delete_ride_request_by_id(rid)
+
+    def get_ride_requests_by_email(self,email):
+        return get_ride_requests_by_email(email)
+
     def check_car_ownership(self,cno,driver):
         c = get_car_by_driver_cno(cno,driver)
         if type(c) is type(None):

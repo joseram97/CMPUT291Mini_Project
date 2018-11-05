@@ -222,11 +222,19 @@ def listSelection(resultList, functionType):
     elif functionType == "REQUEST":
         print("-------------------------------------------------------------------------")
         print("RIDE REQUEST INFORMATION")
-        print("All ride request information will be shown below. Only a max of 5 requests will")
-        print("be shown at a time. To keep seeing 5 more, press ENTER. To leave type")
-        print("'q' and press ENTER. To delete a request, enter in the")
-        print("number of the REQUEST SELECTION. After deletion, ")
-        print("the system will take you back to the main menu.")
+        print("All ride request information will be shown below.")
+        print("To delete a request, enter the request index (NOT rid) in the input")
+        i = 0
+        for row in resultList:
+            print("{0} -- rid:{1}, rdate:{2}, pickup:{3}, dropoff:{4}, cost:{5}".format(i,row[0],row[2],row[3],row[4],row[5]))
+            i += 1
+
+        print("To cancel a request, type the index on the left. Otherwise leave it empty and hit enter")
+        option = input("Make a selection: ")
+        if option is not "":
+            op = int(option)
+            row = resultList[op]
+            cmd.delete_ride_request_by_id(row[0])
     elif functionType == "OFFER":
         print("-------------------------------------------------------------------------")
         print("RIDE OFFER INFORMATION")
@@ -617,7 +625,7 @@ def searchDeleteRequestUI():
         if userInput == "1":
             # get all ride requests
             print("Showing all ride requests...\n")
-            #rideRequests = dataConn.get_ride_requests_by_email(username)
+            rideRequests = cmd.get_ride_requests_by_email(user[0])
             break
         elif userInput == "2":
             # search for desired ride requests
