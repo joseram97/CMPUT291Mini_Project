@@ -349,7 +349,30 @@ def offerRideUI():
     for prompt in promptOptList:
         if not checkInput(prompt, inputList, True):
             return
+    if not cmd.checkDate(inputList[0]):
+        print("Invalid Date")
+        offerRideUI()
+    ##Src is not proper loc
+    srcChoice = inputList[4]
+    dstChoice = inputList[5]
+    if not cmd.check_location(inputList[4]):
+        l = cmd.get_locations_by_keyword(inputList[4])
+        if type(l) is type(None):
+            print("No matching src locations.. restarting")
+            offerRideUI()
+        else:
+            dstChoice = printFive(l)
 
+
+
+    ##Dst is not proper loc
+    if not cmd.check_location(inputList[5]):
+        l = cmd.get_locations_by_keyword(inputList[5])
+        if type(l) is type(None):
+            print("No matching dst locations.. restarting")
+            offerRideUI()
+        else:
+            srcChoice = printFive(l)
     # get a set of enroute locations
     enroute = []
     i = 1
@@ -361,11 +384,56 @@ def offerRideUI():
         enroute.append(enrouteLocation)
         i = i + 1
 
+    if inputList[-1] is "":
+        try:
+            inputList[-1] = get_car_by_driver(user[0])
+        except:
+            print("you do not own any vehicles!")
+            runApp()
+
+
+    if not cmd.check_car_ownership(inputList[-1],user[0]):
+        print("You do not own this vehicle")
+        offerRideUI()
     # now that we have all of the information, we query for the rides
     # TODO: COMPLETE THE OFFER RIDES FUNCTION
-    #offer_ride(inputList[0], inputList[1], inputList[2], inputList[3],
-    #            inputList[4], inputList[5], inputList[6], enroute)
+    cmd.offer_ride(inputList[0],user[0],inputList[1],inputList[2],inputList[3],srcChoice,dstChoice,inputList[-1],enroute)
     print("Successfully added offered ride! Returning to the main menu...\n")
+    return
+
+def printFive(l):
+    i = 0
+    max = len(l)
+    print("Matching Locations:")
+    print("Hit the number to make a selection:")
+    while(True):
+        flag = False
+        try:
+            print("1 - {0} City: {1}, Prov: {2}, Address: {3}".format(l[i][0],l[i][1],l[i][2],l[i][3]))
+            print("2 - {0} City: {1}, Prov: {2}, Address: {3}".format(l[i+1][0],l[i+1][1],l[i+1][2],l[i+1][3]))
+            print("3 - {0} City: {1}, Prov: {2}, Address: {3}".format(l[i+2][0],l[i+2][1],l[i+2][2],l[i+2][3]))
+            print("4 - {0} City: {1}, Prov: {2}, Address: {3}".format(l[i+3][0],l[i+3][1],l[i+3][2],l[i+3][3]))
+            print("5 - {0} City: {1}, Prov: {2}, Address: {3}".format(l[i+4][0],l[i+4][1],l[i+4][2],l[i+4][3]))
+        except:
+            flag = True
+        print("6 - Next Five Choices")
+        inp = input("Make a selection: ")
+        if(inp is "6"):
+            if flag:
+                i = 0
+            else:
+                i+=5
+        if(inp is "1"):
+            return l[i][0]
+        if(inp is "2"):
+            return l[i+1][0]
+        if(inp is "3"):
+            return l[i+2][0]
+        if(inp is "4"):
+            return l[i+3][0]
+        if(inp is "5"):
+            return l[i+4][0]
+
     return
 
 def searchRideUI():

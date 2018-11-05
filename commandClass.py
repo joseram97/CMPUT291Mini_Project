@@ -33,6 +33,13 @@ class command:
         set_messages_to_seen(email)
         return ret
 
+    def check_location(self,lCode):
+        loc = get_locations_by_location_code(lCode)
+        if type(loc) is type(None):
+            return False
+        else:
+            return True
+
 
 
     ##3 Keywords and Number of keywords passed!
@@ -47,13 +54,6 @@ class command:
         ##Check date
         if not self.checkDate(date):
             print("Improper date format, try again");
-            ##TODO: send back to UI class to take input
-        if not self.checkSeats(seats,cno):
-            print("Seats greater than seats in car")
-
-        ##TODO check enroutes
-
-        ##todo: check cno, src, dst
 
 
         offer_ride(date,driver,seats,price,lugDesc,src,dst,cno,enroute)
@@ -68,31 +68,29 @@ class command:
         except:
             return False
 
+    def check_car_ownership(self,cno,driver):
+        c = get_car_by_driver_cno(cno,driver)
+        if type(c) is type(None):
+            return False
+        else:
+            return True
+
+    def get_car_by_driver(self,driver):
+        c = get_car_by_driver(driver)
+        return c[0]
+
     def checkSeats(self,seats,cno):
         ##Checks both seat count and cno
         cars = get_car_by_cno(cno)
         return cars[4] >= seats and cno == cars[0]
 
-    def checkLocationCode(self, lCode):
-        ##Returns either lCode if lCode is an lCode OR list of relevant locations if keyword
-        loc = get_locations_by_location_code(lCode)
-        if type(loc) is not type(None):
-            return lCode
-        else:
-            return get_locations_by_keyword(lCode)
+    def get_locations_by_keyword(self,key):
+        return get_locations_by_keyword(key)
 
 def main():
     c = command("./a2.db")
-    print("Testing date validation: ")
-    print(c.checkDate("2018-09-02"))
-    print(c.checkDate("20812-12-12")) ##Date testing..
-    print(c.checkDate("2018-121-12"))
-    print(c.checkDate("2018-12-121"))
-
-    print("Testing seat validation and ownership: ")
-    print(c.checkSeats(5,4))
-    print(c.checkSeats(4,4))
-    print(c.checkSeats(3,4))
+    print(c.check_location("cntr1"))
+    print(c.check_location("cntr9"))
 
     ##c.post_new_ride_request("2018-02-01","cntr1","cntr2","12","don@mayor.yeg")
     ##c.offer_ride("2018-02-01","don@mayor.yeg",4,12,"desc","cntr1","cntr2",4,[])
