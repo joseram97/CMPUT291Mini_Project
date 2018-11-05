@@ -163,4 +163,4 @@ insert into inbox values
         ('nellie@five.gov', '2018-11-06', 'bob@123.ca', 'Your booking was cancelled for rno:[27]', 27, 'n'),
         ('nellie@five.gov', '2018-11-06', 'bob@123.ca', 'Your booking was cancelled for rno:[28]', 28, 'n'),
         ('darryl@oil.com', '2018-07-24', 'don@mayor.yeg', 'Please see rno:[44] to book! Its available!', 44, 'n'),
-        ('jane_doe@abc.ca', '2018-04-27', 'mess@marky.mark', 'Please see rno:[45] to book! Its available!', 45, 'n')
+        ('jane_doe@abc.ca', '2018-04-27', 'mess@marky.mark', 'Please see rno:[45] to book! Its available!', 45, 'n');
