@@ -104,7 +104,6 @@ def search_for_rides(listKeys):
     key2 = '%'+keys[1]+'%'
     key3 = '%'+keys[2]+'%'
 
-    print(key1,key2,key3)
     ride_search =   '''
                     SELECT DISTINCT r.*
                     FROM rides r, enroute e, locations l
@@ -114,7 +113,8 @@ def search_for_rides(listKeys):
                     OR r.dst = l.lcode)
                     AND (l.city LIKE :key1
                     OR l.prov LIKE :key1
-                    OR l.address LIKE :key1)
+                    OR l.address LIKE :key1
+                    OR l.lcode = :key1)
                     INTERSECT
                     SELECT DISTINCT r.*
                     FROM rides r, enroute e, locations l
@@ -124,7 +124,8 @@ def search_for_rides(listKeys):
                     OR r.dst = l.lcode)
                     AND (l.city LIKE :key2
                     OR l.prov LIKE :key2
-                    OR l.address LIKE :key2)
+                    OR l.address LIKE :key2
+                    OR l.lcode = :key2)
                     INTERSECT
                     SELECT DISTINCT r.*
                     FROM rides r, enroute e, locations l
@@ -134,7 +135,8 @@ def search_for_rides(listKeys):
                     OR r.dst = l.lcode)
                     AND (l.city LIKE :key3
                     OR l.prov LIKE :key3
-                    OR l.address LIKE :key3);
+                    OR l.address LIKE :key3
+                    OR l.lcode = :key3);
                     '''
     cursor.execute(ride_search,{"key1":key1,"key2":key2,"key3":key3});
     connection.commit()
