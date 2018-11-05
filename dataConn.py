@@ -1,3 +1,5 @@
+import sqlite3
+
 #this is the data class that will hold all of the information for the
 # mini-project
 
@@ -96,35 +98,71 @@ def insert_data():
 def offer_ride(date,driver,seats,price,desc,src,dst,cno,enroute):
     ##TODO Check that cno belongs to the driver
     ##Needed for spec 1
+    rno = get_max_ride_id()[0] + 1
     offer_ride=     '''
                     INSERT INTO rides(rno, price, rdate, seats, lugDesc, src, dst, driver, cno) VALUES
                         (:rno,:price,:date,:seats,:desc,:src,:dst,:driver,:cno);
                     '''
-    cursor.execute(send_message,{"rno":rno,"price":price,"date":date,"seats":seats,"desc":desc,"src":src,"dst":dst,"driver":driver,"cno",cno});
+    cursor.execute(send_message,{"rno":rno,"price":price,"date":date,"seats":seats,"desc":desc,"src":src,"dst":dst,"driver":driver,"cno":cno});
+    connection.commit()
     return
 
+#Returns all locations by lCode
 def get_locations_by_location_code(lCode):
     get_locations =     '''
-                        SELECT * FROM locations WHERE lcode = ':lcode';
+                        SELECT * FROM locations WHERE lcode = :lcode;
                         '''
     cursor.execute(get_locations,{"lcode":lCode});
-    return
+    connection.commit()
+    return cursor.fetchone()
 
+#Returns all locations by keyword **Used if lCode is not found**
 def get_locations_by_keyword(keyword):
+    keyword = '%'+keyword+'%'
     get_locations =     '''
-                        SELECT * FROM locations WHERE city IS LIKE '%:keyword%'
+                        SELECT * FROM locations WHERE city LIKE :keyword
                         UNION
-                        SELECT * FROM locations WHERE prov IS LIKE '%:keyword%'
+                        SELECT * FROM locations WHERE prov LIKE :keyword
                         UNION
-                        SELECT * FROM locations WHERE address IS LIKE '%:keyword%';
+                        SELECT * FROM locations WHERE address LIKE :keyword;
                         '''
     cursor.execute(get_locations,{"keyword":keyword});
-    return
+    connection.commit()
+    return cursor.fetchall()
 
+##NOTE: Incomplete
+def search_for_rides(key1,key2,key3):
+    key1 = '%'+key1+'%'
+    key2 = '%'+key2+'%'
+    key3 = '%'+key3+'%'
 
-def search_for_rides():
+    ride_search =   '''
+                    SELECT DISTINCT r.*
+                    FROM rides r, enroute e, locations l
+                    WHERE r.rno = e.rno
+                    AND l.lCode = e.lCode
+                    AND l.city LIKE :key1
+                    OR l.prov LIKE :key1
+                    OR l.address LIKE :key1
+                    INTERSECT
+                    SELECT DISTINCT r.*
+                    FROM rides r, locations l
+                    WHERE r.src = l.lCode
+                    AND l.city LIKE :key2
+                    OR l.prov LIKE :key2
+                    OR l.address LIKE :key2
+                    INTERSECT
+                    SELECT DISTINCT r.*
+                    FROM rides r, locations l
+                    WHERE r.dst = l.lCode
+                    AND l.city LIKE :key3
+                    OR l.prov LIKE :key3
+                    OR l.address LIKE :key3;
+                    '''
 
-    return
+    cursor.execute(ride_search,{"key1":key1,"key2":key2,"key3":key3});
+    connection.commit()
+    return cursor.fetchall()
 
 def post_ride_request(date, pLoc, dLoc, amount, rid, email):
     #Needed for Spec 4
@@ -133,23 +171,26 @@ def post_ride_request(date, pLoc, dLoc, amount, rid, email):
                         (:rid,:email,:date,:pLoc,:dLoc,:amount);
                     '''
     cursor.execute(post_ride,{"rid":rid,"email":email,"date":date,"pLoc":pLoc,"dLoc":dLoc,"amount":amount});
+    connection.commit()
     return
 
 def get_ride_requests_by_email(date, pLoc, dLoc, amount, rid, email):
     #Needed for Spec 5
     get_rides =     '''
-                    SELECT * FROM requests WHERE email = ':email';
+                    SELECT * FROM requests WHERE email = :email;
                     '''
     cursor.execute(get_rides,{"email":email});
+    connection.commit()
     return
 
 
 def delete_ride_by_id(rid):
     #Needed for Spec 5
     delete_rides =      '''
-                        DELETE FROM requests WHERE rid = ':rid';
+                        DELETE FROM requests WHERE rid = :rid;
                         '''
     cursor.execute(delete_rides,{"rid":rid});
+    connection.commit()
     return
 
 def get_requests_by_location(lCode):
@@ -159,9 +200,10 @@ def get_requests_by_location(lCode):
 def remove_booking_by_id(bno):
     ##Needed for Spec #3
     delete_booking =    '''
-                        DELETE FROM bookings WHERE bno = ':bno';
+                        DELETE FROM bookings WHERE bno = :bno;
                         '''
     cursor.execute(delete_rides,{"bno":bno});
+    connection.commit()
     return
 
 def get_rides_by_member(driver):
@@ -172,6 +214,7 @@ def get_rides_by_member(driver):
                 AND r.rno=b.rno;
                 '''
     cursor.execute(get_rides,{"driver":driver});
+    connection.commit()
     return
 
 def send_message_to_member(email, msgTimestamp, sender, content, rno, seen):
@@ -181,10 +224,32 @@ def send_message_to_member(email, msgTimestamp, sender, content, rno, seen):
                         (:email,:msgTimestamp,:sender,:content,:rno,:seen);
                     '''
     cursor.execute(send_message,{"email":email,"msgTimestamp":msgTimestamp,"sender":sender,"content":content,"rno":rno,"seen":seen});
+    connection.commit()
     return
 
+def get_car_by_cno(cno):
+    get_car =   '''
+                SELECT * FROM cars WHERE cno=:cno;
+                '''
+    cursor.execute(get_car,{"cno":cno})
+    connection.commit()
+    return cursor.fetchone()
 
+def get_max_ride_id():
+    get_max = '''
+              SELECT MAX(rno) FROM rides r;
+              '''
+    cursor.execute(get_max)
+    connection.commit()
+    return cursor.fetchone()
 
+def get_max_request_id():
+    get_max = '''
+              SELECT MAX(rid) FROM requests r;
+              '''
+    cursor.execute(get_max)
+    connection.commit()
+    return cursor.fetchone()
 
 def main():
     #######################
