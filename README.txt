@@ -2,7 +2,7 @@ This is the README file for the CMPUT 291 Mini-project
 
 Group Members:
 Jose Ramirez - CCID:jose
-Curtis Goud - CCID:csgoud
+Curtis Goud - CCID:cgoud
 
 Collaborators:
 No collaborators with anyone else
