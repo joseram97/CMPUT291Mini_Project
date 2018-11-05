@@ -108,6 +108,9 @@ class command:
         else:
             return True
 
+    def get_car_by_cno(self,cno):
+        return get_car_by_cno(cno)
+
     def get_car_by_driver(self,driver):
         c = get_car_by_driver(driver)
         return c[0]
@@ -131,6 +134,8 @@ class command:
             print("given rno or email is not valid. Please try again")
         return
 
+    def search_for_rides(self,keys):
+        return search_for_rides(keys)
 
 def main():
     c = command("./a2.db")

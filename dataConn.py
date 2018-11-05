@@ -108,7 +108,7 @@ def search_for_rides(listKeys):
     key3 = '%'+keys[2]+'%'
 
     ride_search =   '''
-                    SELECT DISTINCT r.rno, r.dst, r.src
+                    SELECT DISTINCT r.*
                     FROM rides r, enroute e, locations l1, locations l2, locations l3
                     WHERE r.rno = e.rno
                     AND e.lcode = l3.lcode
@@ -124,7 +124,7 @@ def search_for_rides(listKeys):
                     OR l2.address LIKE :key1
                     OR l3.address LIKE :key1
                     INTERSECT
-                    SELECT DISTINCT r.rno, r.dst, r.src
+                    SELECT DISTINCT r.*
                     FROM rides r, enroute e, locations l1, locations l2, locations l3
                     WHERE r.rno = e.rno
                     AND e.lcode = l3.lcode
@@ -140,7 +140,7 @@ def search_for_rides(listKeys):
                     OR l2.address LIKE :key2
                     OR l3.address LIKE :key2
                     INTERSECT
-                    SELECT DISTINCT r.rno, r.dst, r.src
+                    SELECT DISTINCT r.*
                     FROM rides r, enroute e, locations l1, locations l2, locations l3
                     WHERE r.rno = e.rno
                     AND e.lcode = l3.lcode
