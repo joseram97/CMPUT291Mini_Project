@@ -17,11 +17,14 @@ cursor = None
 
 def initializeData():
     # this will set the database connection
-    print("Please enter the database path:\n")
+    print("Please enter the database path:")
     path = input("Database Path: ")
+    print("\n")
     # dataConn(path) OR dataConn.connect(path) NOTE: Whatever Curtis creates
     return
 
+# The following functions are for the login portion of the application
+#--------------------------LOGIN------------------------------------
 def getUserInformation(password):
     # get all of the user information from the database and assign it to the
     # essentially this is where we fill up the database
@@ -31,8 +34,8 @@ def getUserInformation(password):
 
 def registerUser():
     # the user wants to be registered into the database
-    print("REGISTRATION:\nPlease provide a unique e-mail, a name, a phone")
-    print(" number, and your password.\n\n")
+    print("REGISTRATION:\nPlease provide a unique e-mail, a name, a phone" +
+    " number, and your password.\n")
     email = None
     while(True):
         email = input("Username(e-mail): ")
@@ -45,33 +48,36 @@ def registerUser():
         if (isUnique):
             break
         else:
-            print("This email is not unique. Please try again.")
-            print(" If you want to exit, type int EXIT\n")
+            print("This email is not unique. Please try again.\n")
+            print(" If you want to exit, type in EXIT\n")
     # done the while loop
     # get the rest of the information
     name = input("Full Name: ")
     phone = input("Phone Number(###-###-####): ")
     # TODO: check if the formatting of the phone number is good
     password = input("Password: ")
-
+    print("\n")
+    print("You will now be returned to the login screen...\n")
     # Now insert the user data into the database and return to the login screen
     # dataConn.insert(TODO: query for creating the user into the database)
     return True
 
 def loginUser():
     # get the user to login to the application
-    print("Please type in your Username and Password...\n")
+    print("Please type in your Username and Password...")
     username = input("Username(e-mail): ")
     password = input("Password: ")
+    print("\n")
     getUserInformation(password)
     return
 
 def loginPrompt():
     #This will be the first page that the user will see
-    print("Hello! Welcome to CMPUT 291 RidesApp!!\n")
-    print("Please select one of the following:\n\n")
-    print("1 - Login\n\n2 - Register\n\n")
+    print("Hello! Welcome to CMPUT 291 RidesApp!!")
+    print("Please select one of the following:\n")
+    print("1 - Login\n2 - Register\n")
     selection = input("Type in the number: ")
+    print("\n")
     # User has selected what they want
     if selection == "1":
         #user has selected that they want to login
@@ -83,9 +89,13 @@ def loginPrompt():
             loginUser()
         else:
             #they were unable to register. exit the application
-            print("Unable to register. Try again later.\n")
-            print("Exiting application...")
+            print("Unable to register. Try again later.")
+            print("Exiting application...\n")
     return
+#-------------------END LOGIN------------------------------------
+
+#The following functions are for the main application
+def 
 
 def main():
     #the main code for the software applications
