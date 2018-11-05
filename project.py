@@ -157,13 +157,51 @@ def cancelBooking(booking):
             # remove the booking
             print("Deleting booking [{}]").format(booking[0])
             #dataConn.remove_booking_by_id(booking[0])
+            cancelMessage = "Your booking for [" + str(booking[2]) + "]" +
+                            " has been cancelled!"
+            #dataConn.send_message_to_member(booking[1], user, cancelMessage)
             print("Successfully removed the booking")
             break
     return
 
-def bookMember(booking):
+def bookMember(rideOffer):
     # book a member
+    print("You wish to book a member. You are required to provide the following:")
+    print("the members email, the number of seats booked, cost per seat, pick up")
+    print("location code, and drop off location code.")
+    print("Please fill in the following fields below:")
+    bookingList = ["Member email: ", "Number of booked seats: ",
+                   "Cost per seat: $", "Pick up location [code]: ",
+                   "Drop off location [code]: "]
+    inputResults = []
+    for prompt in bookingList:
+        if prompt == "Number of booked seats: ":
+            # check that the number of seats is not over booked
+            while True:
+                numSeats = input(prompt)
+                if (numSeats == "EXIT"):
+                    print("Exiting function...")
+                    return
+                overbooked = False #use the number of seats to check
+                if overbooked:
+                    # display if the user wants to overide it
+                    allow = input("Will you allow overbooking? [y/n]: ")
+                    if allow == "y":
+                        inputResults.append(numSeats)
+                        break
+                    elif allow == "n"
+                        print("Please change the number of booked seats.")
+        elif not checkInput(prompt, inputResults):
+            return
+
+    # all the inputs are gathered and must be inserted into the database
+    print("Booking member [{}] to rno [{}]...").format(inputResults[0], rideOffer[0])
+    # dataConn.book_member_for_ride(rideOffer[0], inputResults[0],
+    #                               inputResults[1], inputResults[2], inputResults[3],
+    #                               inputResults[4])
+    print("Member is now booked! Returning to main menu...")
     return
+
 # the parameters are the following:
 #      resultList <- contains all the data for visuals
 #      functionType <- the type of function that was deploted (e.g. "REQUEST",
@@ -190,13 +228,21 @@ def listSelection(resultList, functionType):
         print("'q' and press ENTER. To delete a request, enter in the")
         print("number of the REQUEST SELECTION. After deletion, ")
         print("the system will take you back to the main menu.")
+    elif functionType == "OFFER":
+        print("-------------------------------------------------------------------------")
+        print("RIDE OFFER INFORMATION")
+        print("All ride offer information will be shown below. Only a max of 5 offers will")
+        print("be shown at a time. To keep seeing 5 more, press ENTER. To leave type")
+        print("'q' and press ENTER. To book a member, enter in the")
+        print("number of the REQUEST SELECTION. After booking, ")
+        print("the system will take you back to the main menu.")
     elif functionType == "BOOK":
         print("-------------------------------------------------------------------------")
         print("BOOKINGS INFORMATION")
-        print("All bookings information will be shown below. Only a max of 5 requests will")
+        print("All bookings information will be shown below. Only a max of 5 bookings will")
         print("be shown at a time. To keep seeing 5 more, press ENTER. To leave type")
-        print("'q' and press ENTER. To cancel a booking or book a member, enter in the")
-        print("number of the REQUEST SELECTION.")
+        print("'q' and press ENTER. To cancel a booking, enter in the")
+        print("number of the BOOKING SELECTION.")
 
     for ride in resultList:
         # display all of the ride information
@@ -228,27 +274,15 @@ def listSelection(resultList, functionType):
                             elif sure == "n":
                                 continue
                         elif functionType == "BOOK":
-                            # the user will be prompted to wither cancel the
-                            # booking or book a member
-                            print("Please select the following action:")
-                            print("1 - Cancel booking\n2 - Book member")
-                            print("3 - Main Menu")
-                            while True:
-                                option = input("Input selection: ")
-                                if option == "1":
-                                    # cancel the booking
-                                    cancelBooking(resultList[selection-1])
-                                    print("Back to main menu...")
-                                elif option == "2":
-                                    #book a member
-                                    bookMember(resultList[selection-1])
-                                    print("Back to main menu...")
-                                elif option == "3":
-                                    print("Back to main menu...")
-                                    return
-                                else:
-                                    print("Not a valid selection")
-
+                            sure = input("Are you sure you want to cancel? (y/n): ")
+                            if sure == "y":
+                                cancelBooking(resultList[selection-1])
+                            elif sure == "n"
+                                continue
+                        elif functionType == "OFFER":
+                            # the user wants to book a member to one of their
+                            # offered rides
+                            bookMember(resultList[selection-1])
                         return
                 except ValueError:
                     print("Not a number")
@@ -275,8 +309,17 @@ def listSelection(resultList, functionType):
         elif functionType == "BOOK":
             print("///////////////////////////////////////////////////////")
             print("BOOKING SELECTION: " + str(i+1))
-            print("Booking Number: {}\nSeats booked: {}").format(ride[0], ride[4])
+            print("Booking Number: {}\nEmail: {}").format(ride[0], ride[1])
+            print("Ride Number: {}\nCost: {}").format(ride[2], ride[3])
+            print("Number of seats booked: {}\nPickup Location: {}").format(ride[4], ride[5])
+            print("Destination Location: {}").format(ride[6])
             print("////////////////////////////////////////////////////////")
+        elif functionType == "OFFER":
+            print("///////////////////////////////////////////////////////")
+            print("OFFERED RIDE SELECTION: " + str(i+1))
+            print("Ride Number: {}\nSeats available: {}").format(ride[0], ride[1])
+            print("////////////////////////////////////////////////////////")
+        i = i + 1
 
     return
 
@@ -350,13 +393,23 @@ def bookMembersUI():
     # their bookings
     print("BOOKING MEMBERS:\nThis function will allow you to view all of your")
     print("rides that are booked by members. You will be able to cancel anyones")
-    print("booking, or add a member to the booking.\n")
-    print("Showing all of your bookings")
+    print("booking, or add a member to an offred ride.\n")
+    print("Please select one of the following:")
+    print("1 - Show all bookings\n2 - Show all offered rides")
+    print("3 - Main menu")
     # query to get all of the bookings related to the member.
     bookings = None #TODO dataConn.get_bookings_by_driver(username)
-    listSelection(bookings, "BOOK")
-    print("Please select from the following:")
-    print("1 - ")
+    offeredRides = None #TODO dataConn.get_rides_with_available_seats_by_member(user)
+    while True:
+        selectInput = input("Enter selection: ")
+        if selectInput == "1":
+            print("Showing all of your bookings...")
+            listSelection(bookings, "BOOK")
+            break
+        if selectInput == "2":
+            print("Showing all of you ride offers...")
+            listSelection(offeredRides, "OFFER")
+            break
 
     return
 
