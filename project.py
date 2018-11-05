@@ -148,7 +148,17 @@ def sendMessage(driver, userEmail, rno):
     return
 
 def cancelBooking(booking):
-    # cancel the booking
+    # cancel the booking that is selected
+    while True:
+        sure = input("Are you sure you want to cancel the booking? (y/n)")
+        if sure == "n":
+            return
+        elif sure == "y":
+            # remove the booking
+            print("Deleting booking [{}]").format(booking[0])
+            #dataConn.remove_booking_by_id(booking[0])
+            print("Successfully removed the booking")
+            break
     return
 
 def bookMember(booking):
@@ -223,16 +233,21 @@ def listSelection(resultList, functionType):
                             print("Please select the following action:")
                             print("1 - Cancel booking\n2 - Book member")
                             print("3 - Main Menu")
-                            option = input("Input selection: ")
-                            if option == "1":
-                                # cancel the booking
-                                cancelBooking(resultList[selection-1])
-                            elif option == "2":
-                                #book a member
-                                bookMember(resultList[selection-1])
-                            elif option == "3":
-                                print("Back to main menu...")
-                                return
+                            while True:
+                                option = input("Input selection: ")
+                                if option == "1":
+                                    # cancel the booking
+                                    cancelBooking(resultList[selection-1])
+                                    print("Back to main menu...")
+                                elif option == "2":
+                                    #book a member
+                                    bookMember(resultList[selection-1])
+                                    print("Back to main menu...")
+                                elif option == "3":
+                                    print("Back to main menu...")
+                                    return
+                                else:
+                                    print("Not a valid selection")
 
                         return
                 except ValueError:
