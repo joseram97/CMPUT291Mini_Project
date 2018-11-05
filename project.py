@@ -26,6 +26,10 @@ def checkInput(promptString, fieldList, optional = False):
             return False
         elif userInput != "" or optional:
             break
+        elif userInput == "Date (dd/mm/yyyy): ":
+            #check that the format is correct
+            #TODO: check format is correct
+            break
         print("Field can't be empty")
     fieldList.append(userInput)
     return True
@@ -91,25 +95,28 @@ def loginPrompt():
     print("Please select one of the following:\n")
     print("1 - Login\n2 - Register\n3 - Exit")
 
-    selection = input("Type in the number: ")
-    print("\n")
-    # User has selected what they want
-    if selection == "1":
-        #user has selected that they want to login
-        return loginUser()
-    elif selection == "2":
-        #user wants to register for the application
-        if registerUser():
-            # get the user to login officially
+    while True:
+        selection = input("Type in the number: ")
+        print("")
+        # User has selected what they want
+        if selection == "1":
+            #user has selected that they want to login
             return loginUser()
-        else:
-            #they were unable to register. exit the application
-            print("Unable to register. Try again later.")
+        elif selection == "2":
+            #user wants to register for the application
+            if registerUser():
+                # get the user to login officially
+                return loginUser()
+            else:
+                #they were unable to register. exit the application
+                print("Unable to register. Try again later.")
+                print("Exiting application...\n")
+                return False
+        elif selection == "3":
             print("Exiting application...\n")
             return False
-    elif selection == "3":
-        print("Exiting application...\n")
-        return False
+        else:
+            print("Please try again...")
     return
 #-------------------END LOGIN------------------------------------
 
@@ -145,7 +152,7 @@ def offerRideUI():
     enroute = []
     i = 1
     while True:
-        prompt = "Enroute Location[" + Integer.toString(i) + "]"
+        prompt = "Enroute Location[" + str(i) + "]: "
         enrouteLocation = input(prompt)
         if enrouteLocation == "":
             break
@@ -159,27 +166,88 @@ def offerRideUI():
     print("Successfully added offered ride! Returning to the main menu...\n")
     return
 
+def sendMessage(driver, userEmail, rno):
+    # send a message to the driver
+    print("Type in your message below and press ENTER twice in")
+    print("a row to send it\n")
+    print("Message Content: ")
+    messageContent = ""
+    while True:
+        line = input()
+        if line == "":
+            print("Sending the message...")
+            break
+        messageContent = messageContent + line
+
+    # send the message to the dataBase
+    #dataConn.send_message(driver, Date.now, userEmail, messageContent, rno, "n")
+    print("Message has been sent. Back to main menu...")
+    return
+
 def searchRideUI():
     # This is the search ride UI for the application. The user should be able to
     # search for rides that they are interested in
     print("SEARCH FOR RIDES:\nThis function will allow you to search for rides")
     print("within 1-3 locations.")
     print("Please provide below the 1-3 locations")
-    numLocations = input("How many locations will you be searching?: ")
+    numLocations = int(input("How many locations will you be searching?: "))
     searchLocations = []
     for i in range(1, numLocations+1):
-        prompt = "Search Location[" + Integer.toString(i) + "]"
+        prompt = "Search Location[" + str(i) + "]: "
         if not checkInput(prompt, searchLocations):
             return # leave the function
     # Query for all of the locations
     resultRides = None # dataConn(searchLocations)
     # display all of the search results
+    page_limit = 5
+    i = 0
+    print("-------------------------------------------------------------------------")
+    print("RIDE INFORMATION")
+    print("All ride information will be shown below. Only a max of 5 rides will")
+    print("be shown at a time. To keep seeing 5 more, press ENTER. To leave type")
+    print("'q' and press ENTER. To message the driver of a ride, enter in the")
+    print("number of the RIDE SELECTION and type in a message. After message, ")
+    print("the system will take you back to the main menu.")
     for ride in resultRides:
         # display all of the ride information
-        #TODO display ride information
+        if i%5 == 0:
+            while True:
+                displayMore = input("[MORE?]:")
+                if displayMore == "q":
+                    print("Taking you back to main menu...")
+                    return
+                elif displayMore == "":
+                    break
+                selection = None
+                try:
+                    selection = int(displayMore)
+                    if selection > i:
+                        print("Not a valid selection")
+                    else:
+                        sendMessage(ride[7], username, ride[0])
+                        return
+                except ValueError:
+                    print("Not a number")
+
+        # user wants to see more
+        print("///////////////////////////////////////////////////////")
+        print("RIDE SELECTION: " + str(i+1))
+        print("Ride Number: {}\nRide price: {}").format(ride[0], ride[1])
+        print("Date: {}\nNumber of seats: {}").format(ride[2], ride[3])
+        print("Luggage Description: {}\nStart location: {}").format(ride[4], ride[5])
+        print("End Location: {}\nDriver: {}").format(ride[6], ride[7])
+        print("CAR INFORMATION")
+        print("Car number: {}\nMake: {}\nModel: {}").format(ride[8], ride[9], ride[10])
+        print("Year: {}\nSeats: {}\nOwner: {}").format(ride[11], ride[12], ride[13])
+        print("////////////////////////////////////////////////////////")
+
+
     return
 
 def bookMembersUI():
+    # This is the booking UI for the user. The user should be able to view
+    # bookings that they have booked an should be able to cancel some
+    
     return
 
 def postRideRequestUI():

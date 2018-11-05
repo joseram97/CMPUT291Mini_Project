@@ -227,6 +227,7 @@ def get_rides_by_member(driver):
 
 def send_message_to_member(email, msgTimestamp, sender, content, rno, seen):
     ##Needed for Spec #3
+    # I think msgTimestamp should be initialize to date.now in SQL
     send_message =     '''
                     INSERT INTO inbox(email, msgTimestamp, sender, content, rno, seen) VALUES
                         (:email,:msgTimestamp,:sender,:content,:rno,:seen);
