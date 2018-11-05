@@ -7,8 +7,6 @@
 import sqlite3
 import time
 from commandClass import command
-#from dataConn import * #this will get all of the class functions
-#from tkinter import *
 
 #these will be the global variables throughout the application
 username = None
@@ -28,7 +26,6 @@ def checkInput(promptString, fieldList, optional = False):
             break
         elif userInput == "Date (yyyy-mm-dd): ":
             #check that the format is correct
-            #TODO: check format is correct
             break
         print("Field can't be empty")
     fieldList.append(userInput)
@@ -255,6 +252,7 @@ def listSelection(resultList, functionType):
             op = int(option)
             row = resultList[op]
             cmd.delete_ride_request_by_id(row[0])
+        print("Booking cancelled.")
     elif functionType == "OFFER":
         print("-------------------------------------------------------------------------")
         print("RIDE OFFER INFORMATION")
@@ -532,7 +530,6 @@ def offerRideUI():
         print("You do not own this vehicle")
         offerRideUI()
     # now that we have all of the information, we query for the rides
-    # TODO: COMPLETE THE OFFER RIDES FUNCTION
     cmd.offer_ride(inputList[0],user[0],inputList[1],inputList[2],inputList[3],srcChoice,dstChoice,inputList[-1],enroute)
     print("Successfully added offered ride! Returning to the main menu...\n")
     return

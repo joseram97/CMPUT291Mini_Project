@@ -46,7 +46,6 @@ class command:
     ## Leave key2,3 as "!" (STRING) if unused "!" will never match a location and act as if it
     ## does not exist
     def searchForRides(self,key1,key2,key3):
-        ##TODO: Adapt to display rides
         return search_for_rides(key1,key2,key3)
 
     ##All args are strings besides enroute, which is a list of locations
