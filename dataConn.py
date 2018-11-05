@@ -1,5 +1,5 @@
 import sqlite3
-import datetime
+from datetime import datetime
 import os
 #this is the data class that will hold all of the information for the
 # mini-project
@@ -184,7 +184,7 @@ def remove_booking_by_id(bno,email,sender,rno):
     delete_booking =    '''
                         DELETE FROM bookings WHERE bno = :bno;
                         '''
-    cursor.execute(delete_rides,{"bno":bno});
+    cursor.execute(delete_booking,{"bno":bno});
     connection.commit()
     send_message_to_member(email,sender,"Your booking has been cancelled",rno)
     return

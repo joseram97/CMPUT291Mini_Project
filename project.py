@@ -151,14 +151,13 @@ def cancelBooking(booking):
     # cancel the booking that is selected
     while True:
         sure = input("Are you sure you want to cancel the booking? (y/n)")
-        if sure == "n":
+        if sure is "n":
             return
-        elif sure == "y":
+        elif sure is "y":
             # remove the booking
             print("Deleting booking [{}]").format(booking[0])
             #dataConn.remove_booking_by_id(booking[0])
-            cancelMessage = "Your booking for [" + str(booking[2]) + "]" +
-                            " has been cancelled!"
+            cancelMessage = "Your booking for [" + str(booking[2]) + "]" + " has been cancelled!"
             #dataConn.send_message_to_member(booking[1], user, cancelMessage)
             print("Successfully removed the booking")
             break
@@ -189,7 +188,7 @@ def bookMember(rideOffer):
                     if allow == "y":
                         inputResults.append(numSeats)
                         break
-                    elif allow == "n"
+                    elif allow == "n":
                         print("Please change the number of booked seats.")
         elif not checkInput(prompt, inputResults):
             return
@@ -236,6 +235,11 @@ def listSelection(resultList, functionType):
         print("'q' and press ENTER. To book a member, enter in the")
         print("number of the REQUEST SELECTION. After booking, ")
         print("the system will take you back to the main menu.")
+        print("----------Offered rides-------------")
+        for row in resultList:
+            print("rno:{0}, seats:{1}".format(row[0],row[1]))
+        print("")
+        print("")
     elif functionType == "BOOK":
         print("-------------------------------------------------------------------------")
         print("BOOKINGS INFORMATION")
@@ -243,83 +247,101 @@ def listSelection(resultList, functionType):
         print("be shown at a time. To keep seeing 5 more, press ENTER. To leave type")
         print("'q' and press ENTER. To cancel a booking, enter in the")
         print("number of the BOOKING SELECTION.")
+        print("----------Booking info-------------")
+        i = 0
+        for row in resultList:
+            print("{0} -- bno:{1}, email:{2}, rno:{3}, cost:{4}, seats:{5}, pickup:{6}, dropoff:{7}".format(i,row[0],row[1],row[2],row[3],row[4],row[5],row[6]))
+            i += 1
+        print("")
+        print("To cancel a booking, type the index on the left. Otherwise leave it empty and hit enter")
+        option = input("Make a selection: ")
+        if option is not "":
+            op = int(option)
+            row = resultList[op]
+            cmd.cancel_booking_by_bno(row[0],row[1],user[0],row[2]) ##remove booking
 
-    for ride in resultList:
-        # display all of the ride information
-        if i%5 == 0:
-            while True:
-                displayMore = input("[MORE?]:")
-                if displayMore == "q":
-                    print("Taking you back to main menu...")
-                    return
-                elif displayMore == "":
-                    break
-                selection = None
-                try:
-                    selection = int(displayMore)
-                    if selection > i:
-                        print("Not a valid selection")
-                    else:
-                        if functionType == "RIDE":
-                            sendMessage(resultList[selection-1][7],
-                                        username, resultList[selection-1][0])
-                        elif functionType == "REQUEST":
-                            # the request must be deleted
-                            sure = input("Are you sure? (y/n): ")
-                            if sure == "y":
-                                print("Deleting request...")
-                                # TODO: dataConn.delete_ride_by_id(resultList[selection-1][0])
-                                print("Request deleted. Back to main menu...")
-                                return
-                            elif sure == "n":
-                                continue
-                        elif functionType == "BOOK":
-                            sure = input("Are you sure you want to cancel? (y/n): ")
-                            if sure == "y":
-                                cancelBooking(resultList[selection-1])
-                            elif sure == "n"
-                                continue
-                        elif functionType == "OFFER":
+
+
+
+
+
+
+#    for ride in resultList:
+#        # display all of the ride information
+#        if i%5 == 0:
+#            while True:
+#                displayMore = input("[MORE?]:")
+#                if displayMore == "q":
+#                    print("Taking you back to main menu...")
+#                    return
+#                elif displayMore == "":
+#                    break
+#                selection = None
+#                try:
+#                    selection = int(displayMore)
+#                    if selection > i:
+#                        print("Not a valid selection")
+#                    else:
+#                        if functionType == "RIDE":
+#                            sendMessage(resultList[selection-1][7],
+#                                        username, resultList[selection-1][0])
+#                        elif functionType == "REQUEST":
+#                            # the request must be deleted
+#                            sure = input("Are you sure? (y/n): ")
+#                            if sure == "y":
+#                                print("Deleting request...")
+#                                # TODO: dataConn.delete_ride_by_id(resultList[selection-1][0])
+#                                print("Request deleted. Back to main menu...")
+#                                return
+#                            elif sure == "n":
+#                                continue
+#                        elif functionType == "BOOK":
+#                            sure = input("Are you sure you want to cancel? (y/n): ")
+#                            if sure == "y":
+#                                cancelBooking(resultList[selection-1])
+#                            elif sure == "n":
+#                                continue
+#                        elif functionType == "OFFER":
                             # the user wants to book a member to one of their
                             # offered rides
-                            bookMember(resultList[selection-1])
-                        return
-                except ValueError:
-                    print("Not a number")
+#                            bookMember(resultList[selection-1])
+#                        return
+#                except ValueError:
+#                    print("Not a number")
 
-        if functionType == "RIDE":
+#        if functionType == "RIDE":
         # user wants to see more
-            print("///////////////////////////////////////////////////////")
-            print("RIDE SELECTION: " + str(i+1))
-            print("Ride Number: {}\nRide price: {}").format(ride[0], ride[1])
-            print("Date: {}\nNumber of seats: {}").format(ride[2], ride[3])
-            print("Luggage Description: {}\nStart location: {}").format(ride[4], ride[5])
-            print("End Location: {}\nDriver: {}").format(ride[6], ride[7])
-            print("CAR INFORMATION")
-            print("Car number: {}\nMake: {}\nModel: {}").format(ride[8], ride[9], ride[10])
-            print("Year: {}\nSeats: {}\nOwner: {}").format(ride[11], ride[12], ride[13])
-            print("////////////////////////////////////////////////////////")
-        elif functionType == "REQUEST":
-            print("///////////////////////////////////////////////////////")
-            print("REQUEST SELECTION: " + str(i+1))
-            print("Ride ID: {}\nEmail: {}").format(ride[0], ride[1])
-            print("Date: {}\nPick up location: {}").format(ride[2], ride[3])
-            print("Drop off location: {}\nAmount: {}").format(ride[4], ride[5])
-            print("////////////////////////////////////////////////////////")
-        elif functionType == "BOOK":
-            print("///////////////////////////////////////////////////////")
-            print("BOOKING SELECTION: " + str(i+1))
-            print("Booking Number: {}\nEmail: {}").format(ride[0], ride[1])
-            print("Ride Number: {}\nCost: {}").format(ride[2], ride[3])
-            print("Number of seats booked: {}\nPickup Location: {}").format(ride[4], ride[5])
-            print("Destination Location: {}").format(ride[6])
-            print("////////////////////////////////////////////////////////")
-        elif functionType == "OFFER":
-            print("///////////////////////////////////////////////////////")
-            print("OFFERED RIDE SELECTION: " + str(i+1))
-            print("Ride Number: {}\nSeats available: {}").format(ride[0], ride[1])
-            print("////////////////////////////////////////////////////////")
-        i = i + 1
+#            print("///////////////////////////////////////////////////////")
+#            print("RIDE SELECTION: " + str(i+1))
+#            print("Ride Number: {0}\nRide price: {1}".format(ride[0], ride[1]))
+#            print("Date: {0}\nNumber of seats: {1}".format(ride[2], ride[3]))
+#            print("Luggage Description: {0}\nStart location: {1}".format(ride[4], ride[5]))
+#            print("End Location: {0}\nDriver: {1}".format(ride[6], ride[7]))
+#            print("CAR INFORMATION")
+#            print("Car number: {0}\nMake: {1}\nModel: {2}").format(ride[8], ride[9], ride[10])
+#            print("Year: {0}\nSeats: {1}\nOwner: {2}").format(ride[11], ride[12], ride[13])
+#            print("////////////////////////////////////////////////////////")
+#        elif functionType == "REQUEST":
+#            print("///////////////////////////////////////////////////////")
+#            print("REQUEST SELECTION: " + str(i+1))
+#            print("Ride ID: {}\nEmail: {}").format(ride[0], ride[1])
+#            print("Date: {}\nPick up location: {}").format(ride[2], ride[3])
+#            print("Drop off location: {}\nAmount: {}").format(ride[4], ride[5])
+#            print("////////////////////////////////////////////////////////")
+#        elif functionType == "BOOK":
+#            print("///////////////////////////////////////////////////////")
+#            print("BOOKING SELECTION: " + str(i+1))
+#            print("Booking Number: {}\nEmail: {}").format(ride[0], ride[1])
+#            print("Ride Number: {}\nCost: {}").format(ride[2], ride[3])
+#            print("Number of seats booked: {}\nPickup Location: {}").format(ride[4], ride[5])
+#            print("Destination Location: {}").format(ride[6])
+#            print("////////////////////////////////////////////////////////")
+#        elif functionType == "OFFER":
+#            print("///////////////////////////////////////////////////////")
+#            print("OFFERED RIDE SELECTION: " + str(i+1))
+#            print("Ride Number: {0}\nSeats available: {1}".format(ride[0], ride[1]))
+#            print("////////////////////////////////////////////////////////")
+#        i = i + 1
 
     return
 
@@ -466,8 +488,8 @@ def bookMembersUI():
     print("1 - Show all bookings\n2 - Show all offered rides")
     print("3 - Main menu")
     # query to get all of the bookings related to the member.
-    bookings = None #TODO dataConn.get_bookings_by_driver(username)
-    offeredRides = None #TODO dataConn.get_rides_with_available_seats_by_member(user)
+    bookings = cmd.get_bookings_by_driver(user[0])
+    offeredRides = cmd.get_rides_with_available_seats_by_member(user[0])
     while True:
         selectInput = input("Enter selection: ")
         if selectInput == "1":

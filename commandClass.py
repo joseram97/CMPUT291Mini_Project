@@ -68,6 +68,16 @@ class command:
         except:
             return False
 
+    def get_bookings_by_driver(self,driver):
+        return get_bookings_by_driver(driver)
+
+    def cancel_booking_by_bno(self,bno,email,sender,rno):
+        remove_booking_by_id(bno,email,sender,rno)
+        return
+
+    def get_rides_with_available_seats_by_member(self,driver):
+        return get_rides_with_available_seats_by_member(driver)
+
     def check_car_ownership(self,cno,driver):
         c = get_car_by_driver_cno(cno,driver)
         if type(c) is type(None):
