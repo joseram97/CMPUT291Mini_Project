@@ -290,45 +290,26 @@ def doRideSearch(l):
 
     while(True):
         flag = False
-        print("1 - rno:{0}, price:{1}, rdate:{2}, seats:{3}, lugDesc:{4}, src:{5}, dst:{6}, driver:{7}, cno:{8}".format(l[i][0],l[i][1],l[i][2],l[i][3],l[i][4],l[i][5],l[i][6],l[i][7],l[i][8]))
-        r1 = cmd.get_car_by_cno(l[i][8])
-        print("Car info ---> cno: {0}, make: {1}, model: {2}, year: {3}, seats: {4}, owner: {5}".format(r1[0],r1[1],r1[2],r1[3],r1[4],r1[5]))
-
-        print("2 - rno:{0}, price:{1}, rdate:{2}, seats:{3}, lugDesc:{4}, src:{5}, dst:{6}, driver:{7}, cno:{8}".format(l[i+1][0],l[i+1][1],l[i+1][2],l[i+1][3],l[i+1][4],l[i+1][5],l[i+1][6],l[i+1][7],l[i+1][8]))
-        r2 = cmd.get_car_by_cno(l[i+1][8])
-        print("Car info ---> cno: {0}, make: {1}, model: {2}, year: {3}, seats: {4}, owner: {5}".format(r2[0],r2[1],r2[2],r2[3],r2[4],r2[5]))
-
-        print("3 - rno:{0}, price:{1}, rdate:{2}, seats:{3}, lugDesc:{4}, src:{5}, dst:{6}, driver:{7}, cno:{8}".format(l[i+2][0],l[i+2][1],l[i+2][2],l[i+2][3],l[i+2][4],l[i+2][5],l[i+2][6],l[i+2][7],l[i+2][8]))
-        r3 = cmd.get_car_by_cno(l[i+2][8])
-        print("Car info ---> cno: {0}, make: {1}, model: {2}, year: {3}, seats: {4}, owner: {5}".format(r3[0],r3[1],r3[2],r3[3],r3[4],r3[5]))
-
-        print("4 - rno:{0}, price:{1}, rdate:{2}, seats:{3}, lugDesc:{4}, src:{5}, dst:{6}, driver:{7}, cno:{8}".format(l[i+3][0],l[i+3][1],l[i+3][2],l[i+3][3],l[i+3][4],l[i+3][5],l[i+3][6],l[i+3][7],l[i+3][8]))
-        r4 = cmd.get_car_by_cno(l[i+3][8])
-        print("Car info ---> cno: {0}, make: {1}, model: {2}, year: {3}, seats: {4}, owner: {5}".format(r4[0],r4[1],r4[2],r4[3],r4[4],r4[5]))
-
-        print("5 - rno:{0}, price:{1}, rdate:{2}, seats:{3}, lugDesc:{4}, src:{5}, dst:{6}, driver:{7}, cno:{8}".format(l[i+4][0],l[i+4][1],l[i+4][2],l[i+4][3],l[i+4][4],l[i+4][5],l[i+4][6],l[i+4][7],l[i+4][8]))
-        r5 = cmd.get_car_by_cno(l[i+4][8])
-        print("Car info ---> cno: {0}, make: {1}, model: {2}, year: {3}, seats: {4}, owner: {5}".format(r5[0],r5[1],r5[2],r5[3],r5[4],r5[5]))
         try:
             print("1 - rno:{0}, price:{1}, rdate:{2}, seats:{3}, lugDesc:{4}, src:{5}, dst:{6}, driver:{7}, cno:{8}".format(l[i][0],l[i][1],l[i][2],l[i][3],l[i][4],l[i][5],l[i][6],l[i][7],l[i][8]))
             r1 = cmd.get_car_by_cno(l[i][8])
-            print("Car info ---> cno: {0}, make: {1}, model: {2}, year: {3}, seats: {4}, owner: {5}".format(r1[0],r1[1],r1[2],r1[3],r1[4],r1[5]))
+            print("1 - Car info ---> cno: {0}, make: {1}, model: {2}, year: {3}, seats: {4}, owner: {5}".format(r1[0],r1[1],r1[2],r1[3],r1[4],r1[5]))
 
             print("2 - rno:{0}, price:{1}, rdate:{2}, seats:{3}, lugDesc:{4}, src:{5}, dst:{6}, driver:{7}, cno:{8}".format(l[i+1][0],l[i+1][1],l[i+1][2],l[i+1][3],l[i+1][4],l[i+1][5],l[i+1][6],l[i+1][7],l[i+1][8]))
             r2 = cmd.get_car_by_cno(l[i+1][8])
-            print("Car info ---> cno: {0}, make: {1}, model: {2}, year: {3}, seats: {4}, owner: {5}".format(r2[0],r2[1],r2[2],r2[3],r2[4],r2[5]))
+            print("2 - Car info ---> cno: {0}, make: {1}, model: {2}, year: {3}, seats: {4}, owner: {5}".format(r2[0],r2[1],r2[2],r2[3],r2[4],r2[5]))
 
             print("3 - rno:{0}, price:{1}, rdate:{2}, seats:{3}, lugDesc:{4}, src:{5}, dst:{6}, driver:{7}, cno:{8}".format(l[i+2][0],l[i+2][1],l[i+2][2],l[i+2][3],l[i+2][4],l[i+2][5],l[i+2][6],l[i+2][7],l[i+2][8]))
             r3 = cmd.get_car_by_cno(l[i+2][8])
-            print("Car info ---> cno: {0}, make: {1}, model: {2}, year: {3}, seats: {4}, owner: {5}".format(r3[0],r3[1],r3[2],r3[3],r3[4],r3[5]))
+            print("3 - Car info ---> cno: {0}, make: {1}, model: {2}, year: {3}, seats: {4}, owner: {5}".format(r3[0],r3[1],r3[2],r3[3],r3[4],r3[5]))
 
             print("4 - rno:{0}, price:{1}, rdate:{2}, seats:{3}, lugDesc:{4}, src:{5}, dst:{6}, driver:{7}, cno:{8}".format(l[i+3][0],l[i+3][1],l[i+3][2],l[i+3][3],l[i+3][4],l[i+3][5],l[i+3][6],l[i+3][7],l[i+3][8]))
             r4 = cmd.get_car_by_cno(l[i+3][8])
-            print("Car info ---> cno: {0}, make: {1}, model: {2}, year: {3}, seats: {4}, owner: {5}".format(r4[0],r4[1],r4[2],r4[3],r4[4],r4[5]))
+            print("4 - Car info ---> cno: {0}, make: {1}, model: {2}, year: {3}, seats: {4}, owner: {5}".format(r4[0],r4[1],r4[2],r4[3],r4[4],r4[5]))
 
             print("5 - rno:{0}, price:{1}, rdate:{2}, seats:{3}, lugDesc:{4}, src:{5}, dst:{6}, driver:{7}, cno:{8}".format(l[i+4][0],l[i+4][1],l[i+4][2],l[i+4][3],l[i+4][4],l[i+4][5],l[i+4][6],l[i+4][7],l[i+4][8]))
             r5 = cmd.get_car_by_cno(l[i+4][8])
-            print("Car info ---> cno: {0}, make: {1}, model: {2}, year: {3}, seats: {4}, owner: {5}".format(r5[0],r5[1],r5[2],r5[3],r5[4],r5[5]))
+            print("5 - Car info ---> cno: {0}, make: {1}, model: {2}, year: {3}, seats: {4}, owner: {5}".format(r5[0],r5[1],r5[2],r5[3],r5[4],r5[5]))
         except:
             flag = True
         print("6 - Next Five Choices")

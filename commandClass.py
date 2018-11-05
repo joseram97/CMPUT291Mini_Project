@@ -140,7 +140,7 @@ def main():
     c = command("./a2.db")
     print(c.checkDate("2018-02-01"))
 
-    for row in search_for_rides(["Calgary","Edmonton","West"]):
+    for row in search_for_rides(["Edmonton","Vancouver"]):
         print("rno:{0}, dst:{1}, src:{2}".format(row[0],row[1],row[2]))
     return
 

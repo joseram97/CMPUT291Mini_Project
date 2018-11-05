@@ -104,22 +104,37 @@ def search_for_rides(listKeys):
     key2 = '%'+keys[1]+'%'
     key3 = '%'+keys[2]+'%'
 
+    print(key1,key2,key3)
     ride_search =   '''
                     SELECT DISTINCT r.*
-                    FROM rides r, enroute e, locations l1, locations l2, locations l3
-                    WHERE r.rno = e.rno
-                    AND e.lcode = l3.lcode
-                    AND r.src = l1.lcode
-                    AND r.dst = l2.lcode
-                    AND l1.city LIKE :key1
-                    OR l2.city LIKE :key1
-                    OR l3.city LIKE :key1
-                    AND l1.prov LIKE :key1
-                    OR l2.prov LIKE :key1
-                    OR l3.prov LIKE :key1
-                    AND l1.address LIKE :key1
-                    OR l2.address LIKE :key1
-                    OR l3.address LIKE :key1;
+                    FROM rides r, enroute e, locations l
+                    WHERE (r.rno = e.rno
+                    AND e.lcode = l.lcode
+                    OR r.src = l.lcode
+                    OR r.dst = l.lcode)
+                    AND (l.city LIKE :key1
+                    OR l.prov LIKE :key1
+                    OR l.address LIKE :key1)
+                    INTERSECT
+                    SELECT DISTINCT r.*
+                    FROM rides r, enroute e, locations l
+                    WHERE (r.rno = e.rno
+                    AND e.lcode = l.lcode
+                    OR r.src = l.lcode
+                    OR r.dst = l.lcode)
+                    AND (l.city LIKE :key2
+                    OR l.prov LIKE :key2
+                    OR l.address LIKE :key2)
+                    INTERSECT
+                    SELECT DISTINCT r.*
+                    FROM rides r, enroute e, locations l
+                    WHERE (r.rno = e.rno
+                    AND e.lcode = l.lcode
+                    OR r.src = l.lcode
+                    OR r.dst = l.lcode)
+                    AND (l.city LIKE :key3
+                    OR l.prov LIKE :key3
+                    OR l.address LIKE :key3);
                     '''
     cursor.execute(ride_search,{"key1":key1,"key2":key2,"key3":key3});
     connection.commit()
