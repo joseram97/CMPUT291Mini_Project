@@ -129,6 +129,31 @@ def loginPrompt():
 #-------------------END LOGIN------------------------------------
 
 #The following functions are for the main application
+def sendMessage(driver, userEmail, rno):
+    # send a message to the driver
+    print("Type in your message below and press ENTER twice in")
+    print("a row to send it\n")
+    print("Message Content: ")
+    messageContent = ""
+    while True:
+        line = input()
+        if line == "":
+            print("Sending the message...")
+            break
+        messageContent = messageContent + line
+
+    # send the message to the dataBase
+    #dataConn.send_message(driver, Date.now, userEmail, messageContent, rno, "n")
+    print("Message has been sent. Back to main menu...")
+    return
+
+def cancelBooking(booking):
+    # cancel the booking
+    return
+
+def bookMember(booking):
+    # book a member
+    return
 # the parameters are the following:
 #      resultList <- contains all the data for visuals
 #      functionType <- the type of function that was deploted (e.g. "REQUEST",
@@ -155,6 +180,13 @@ def listSelection(resultList, functionType):
         print("'q' and press ENTER. To delete a request, enter in the")
         print("number of the REQUEST SELECTION. After deletion, ")
         print("the system will take you back to the main menu.")
+    elif functionType == "BOOK":
+        print("-------------------------------------------------------------------------")
+        print("BOOKINGS INFORMATION")
+        print("All bookings information will be shown below. Only a max of 5 requests will")
+        print("be shown at a time. To keep seeing 5 more, press ENTER. To leave type")
+        print("'q' and press ENTER. To cancel a booking or book a member, enter in the")
+        print("number of the REQUEST SELECTION.")
 
     for ride in resultList:
         # display all of the ride information
@@ -173,17 +205,34 @@ def listSelection(resultList, functionType):
                         print("Not a valid selection")
                     else:
                         if functionType == "RIDE":
-                            sendMessage(ride[7], username, ride[0])
+                            sendMessage(resultList[selection-1][7],
+                                        username, resultList[selection-1][0])
                         elif functionType == "REQUEST":
                             # the request must be deleted
                             sure = input("Are you sure? (y/n): ")
                             if sure == "y":
                                 print("Deleting request...")
-                                # TODO: dataConn.delete_ride_by_id(ride[0])
+                                # TODO: dataConn.delete_ride_by_id(resultList[selection-1][0])
                                 print("Request deleted. Back to main menu...")
                                 return
                             elif sure == "n":
                                 continue
+                        elif functionType == "BOOK":
+                            # the user will be prompted to wither cancel the
+                            # booking or book a member
+                            print("Please select the following action:")
+                            print("1 - Cancel booking\n2 - Book member")
+                            print("3 - Main Menu")
+                            option = input("Input selection: ")
+                            if option == "1":
+                                # cancel the booking
+                                cancelBooking(resultList[selection-1])
+                            elif option == "2":
+                                #book a member
+                                bookMember(resultList[selection-1])
+                            elif option == "3":
+                                print("Back to main menu...")
+                                return
 
                         return
                 except ValueError:
@@ -207,6 +256,11 @@ def listSelection(resultList, functionType):
             print("Ride ID: {}\nEmail: {}").format(ride[0], ride[1])
             print("Date: {}\nPick up location: {}").format(ride[2], ride[3])
             print("Drop off location: {}\nAmount: {}").format(ride[4], ride[5])
+            print("////////////////////////////////////////////////////////")
+        elif functionType == "BOOK":
+            print("///////////////////////////////////////////////////////")
+            print("BOOKING SELECTION: " + str(i+1))
+            print("Booking Number: {}\nSeats booked: {}").format(ride[0], ride[4])
             print("////////////////////////////////////////////////////////")
 
     return
@@ -256,24 +310,6 @@ def offerRideUI():
     print("Successfully added offered ride! Returning to the main menu...\n")
     return
 
-def sendMessage(driver, userEmail, rno):
-    # send a message to the driver
-    print("Type in your message below and press ENTER twice in")
-    print("a row to send it\n")
-    print("Message Content: ")
-    messageContent = ""
-    while True:
-        line = input()
-        if line == "":
-            print("Sending the message...")
-            break
-        messageContent = messageContent + line
-
-    # send the message to the dataBase
-    #dataConn.send_message(driver, Date.now, userEmail, messageContent, rno, "n")
-    print("Message has been sent. Back to main menu...")
-    return
-
 def searchRideUI():
     # This is the search ride UI for the application. The user should be able to
     # search for rides that they are interested in
@@ -295,7 +331,17 @@ def searchRideUI():
 
 def bookMembersUI():
     # This is the booking UI for the user. The user should be able to view
-    # bookings that they have booked an should be able to cancel some
+    # bookings that they have booked an should be able to cancel some of
+    # their bookings
+    print("BOOKING MEMBERS:\nThis function will allow you to view all of your")
+    print("rides that are booked by members. You will be able to cancel anyones")
+    print("booking, or add a member to the booking.\n")
+    print("Showing all of your bookings")
+    # query to get all of the bookings related to the member.
+    bookings = None #TODO dataConn.get_bookings_by_driver(username)
+    listSelection(bookings, "BOOK")
+    print("Please select from the following:")
+    print("1 - ")
 
     return
 
