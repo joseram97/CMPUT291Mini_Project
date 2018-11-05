@@ -132,10 +132,17 @@ def get_locations_by_keyword(keyword):
     return cursor.fetchall()
 
 ##NOTE: Incomplete
-def search_for_rides(key1,key2,key3):
-    key1 = '%'+key1+'%'
-    key2 = '%'+key2+'%'
-    key3 = '%'+key3+'%'
+def search_for_rides(listKeys):
+    # listKeys is a list of all of the location keywords
+    keys = [""]*3
+    i = 0
+    for keyword in listKeys:
+        keys[i] = keyword
+        i = i + 1
+
+    key1 = '%'+keys[0]+'%'
+    key2 = '%'+keys[1]+'%'
+    key3 = '%'+keys[2]+'%'
 
     ride_search =   '''
                     SELECT DISTINCT r.*

@@ -172,7 +172,11 @@ def searchRideUI():
         if not checkInput(prompt, searchLocations):
             return # leave the function
     # Query for all of the locations
+    resultRides = None # dataConn(searchLocations)
     # display all of the search results
+    for ride in resultRides:
+        # display all of the ride information
+        #TODO display ride information
     return
 
 def bookMembersUI():
