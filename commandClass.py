@@ -77,18 +77,14 @@ def main():
     print(c.checkSeats(4,4))
     print(c.checkSeats(3,4))
 
-    c.post_new_ride_request("2018-02-01","cntr1","cntr2","12","don@mayor.yeg")
-    c.offer_ride("2018-02-01","don@mayor.yeg",4,12,"desc","cntr1","cntr2",4,[])
+    ##c.post_new_ride_request("2018-02-01","cntr1","cntr2","12","don@mayor.yeg")
+    ##c.offer_ride("2018-02-01","don@mayor.yeg",4,12,"desc","cntr1","cntr2",4,[])
 
     ##WORKING
     ##print("Testing location checks: ")
     ##print(c.checkLocationCode('cntr1'))
-    ##for row in c.checkLocationCode("Edmonton"):
-    ##    print("{0}: {1} {2} {3}".format(row[0],row[1],row[2],row[3]))
-
-    for row in c.searchForRides("Edmonton","",""):
-        print("{0}: {1} {2} {3}".format(row[0],row[1],row[2],row[3]))
-
+    for row in get_requests_by_location("nrth1"):
+        print("{0}: {1} {2}".format(row[0],row[1],row[2]))
     return
 
 if __name__ == "__main__":
