@@ -247,10 +247,28 @@ def searchRideUI():
 def bookMembersUI():
     # This is the booking UI for the user. The user should be able to view
     # bookings that they have booked an should be able to cancel some
-    
+
     return
 
 def postRideRequestUI():
+    # The user will be able to post a ride request that they want a driver to
+    # start offering
+    print("REQUEST A RIDE:\nThis function will allow you to post a ride request")
+    print("on the application. You must provide a date(dd/mm/yyyy), pick up")
+    print("location, drop off location, and the amount willing to pay for a")
+    print("seat.\n")
+    print("Please fill in the required fields below:")
+    requestField = ["Date (dd/mm/yyyy): ", "Pick up location: ",
+                    "Drop off location: ", "Amout per seat: $"]
+    fieldResults = []
+    for prompt in requestField:
+        if not checkInput(prompt, fieldResults):
+            return
+
+    # with all of the information, insert it into the database
+    print("Posting...")
+    # dataConn.post_ride_request(fieldResults)
+    print("Successfully posted ride request! Sending back to main menu...")
     return
 
 def searchDeleteRequestUI():
