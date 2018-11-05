@@ -230,16 +230,8 @@ def listSelection(resultList, functionType):
     elif functionType == "OFFER":
         print("-------------------------------------------------------------------------")
         print("RIDE OFFER INFORMATION")
-        print("All ride offer information will be shown below. Only a max of 5 offers will")
-        print("be shown at a time. To keep seeing 5 more, press ENTER. To leave type")
-        print("'q' and press ENTER. To book a member, enter in the")
-        print("number of the REQUEST SELECTION. After booking, ")
-        print("the system will take you back to the main menu.")
         print("----------Offered rides-------------")
-        for row in resultList:
-            print("rno:{0}, seats:{1}".format(row[0],row[1]))
-        print("")
-        print("")
+        ret = doOfferBookings(resultList)
     elif functionType == "BOOK":
         print("-------------------------------------------------------------------------")
         print("BOOKINGS INFORMATION")
@@ -344,6 +336,45 @@ def listSelection(resultList, functionType):
 #        i = i + 1
 
     return
+
+def doOfferBookings(list):
+    i = 0
+    max = len(list)
+    print("Offered rides:")
+    print("Hit the number to make a selection:")
+    while(True):
+        flag = False
+        try:
+            print("1 - {0} rno: {1}, Available Seats: {2}".format(l[i][0],l[i][1],l[i][2]))
+            print("2 - {0} rno: {1}, Available Seats: {2}".format(l[i+1][0],l[i+1][1],l[i+1][2],l[i+1][3]))
+            print("3 - {0} rno: {1}, Available Seats: {2}".format(l[i+2][0],l[i+2][1],l[i+2][2],l[i+2][3]))
+            print("4 - {0} rno: {1}, Available Seats: {2}".format(l[i+3][0],l[i+3][1],l[i+3][2],l[i+3][3]))
+            print("5 - {0} rno: {1}, Available Seats: {2}".format(l[i+4][0],l[i+4][1],l[i+4][2],l[i+4][3]))
+        except:
+            flag = True
+        print("6 - Next Five Choices")
+        print("7 - Exit")
+        inp = input("Make a selection: ")
+        if(inp is "6"):
+            if flag:
+                i = 0
+            else:
+                i+=5
+        if(inp is "7"):
+            break
+        if(inp is "1"):
+            return l[i][0]
+        if(inp is "2"):
+            return l[i+1][0]
+        if(inp is "3"):
+            return l[i+2][0]
+        if(inp is "4"):
+            return l[i+3][0]
+        if(inp is "5"):
+            return l[i+4][0]
+
+    return
+
 
 def offerRideUI():
     # this is the offer ride UI for the user to selection the options from
@@ -490,7 +521,8 @@ def bookMembersUI():
     # query to get all of the bookings related to the member.
     bookings = cmd.get_bookings_by_driver(user[0])
     offeredRides = cmd.get_rides_with_available_seats_by_member(user[0])
-    while True:
+    exitFlag = False
+    while not exitFlag:
         selectInput = input("Enter selection: ")
         if selectInput == "1":
             print("Showing all of your bookings...")
@@ -500,6 +532,9 @@ def bookMembersUI():
             print("Showing all of you ride offers...")
             listSelection(offeredRides, "OFFER")
             break
+        elif selectInput == "3":
+            print("Main menu")
+            exitFlag = True
 
     return
 
@@ -604,12 +639,12 @@ def runApp():
 
 
     # set up all of the possible options for the user to interact with
-    print("The following selections may be chosen to proceed within the app:")
-    print("1 - Offer a ride\n2 - Search for a ride\n3 - Book members or " +
-          "cancel bookings\n4 - Post a ride request\n5 - Search and delete" +
-          " ride requests\n6 - Exit application\n")
-    selection = input("Please type in the desired selection(number): ")
     while True:
+        print("The following selections may be chosen to proceed within the app:")
+        print("1 - Offer a ride\n2 - Search for a ride\n3 - Book members or " +
+              "cancel bookings\n4 - Post a ride request\n5 - Search and delete" +
+              " ride requests\n6 - Exit application\n")
+        selection = input("Please type in the desired selection(number): ")
         if selection == "1":
             offerRideUI()
         elif selection == "2":
