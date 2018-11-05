@@ -104,7 +104,7 @@ def offer_ride(date,driver,seats,price,desc,src,dst,cno,enroute):
                     INSERT INTO rides(rno, price, rdate, seats, lugDesc, src, dst, driver, cno) VALUES
                         (:rno,:price,:date,:seats,:desc,:src,:dst,:driver,:cno);
                     '''
-    cursor.execute(send_message,{"rno":rno,"price":price,"date":date,"seats":seats,"desc":desc,"src":src,"dst":dst,"driver":driver,"cno":cno});
+    cursor.execute(offer_ride,{"rno":rno,"price":price,"date":date,"seats":seats,"desc":desc,"src":src,"dst":dst,"driver":driver,"cno":cno});
     connection.commit()
     return
 

@@ -11,11 +11,11 @@ class command:
         connect(path)
 
 
-    def post_new_ride_request(date,pLoc,dLoc,amount,email):
-        if not checkDate(date):
+    def post_new_ride_request(self,date,pLoc,dLoc,amount,email):
+        if not self.checkDate(date):
             print("Improper date format, try again");
         rid = get_max_request_id()[0] + 1
-        post_ride_request(date,pLoc,dLoc,rid,amount,email)
+        post_ride_request(date,pLoc,dLoc,amount,rid,email)
         return
 
     ##3 Keywords and Number of keywords passed!
@@ -26,12 +26,12 @@ class command:
         return search_for_rides(key1,key2,key3)
 
     ##All args are strings besides enroute, which is a list of locations
-    def offer_ride(date, driver, seats, price, lugDesc, src, dst, cno, enroute):
+    def offer_ride(self,date, driver, seats, price, lugDesc, src, dst, cno, enroute):
         ##Check date
-        if not checkDate(date):
+        if not self.checkDate(date):
             print("Improper date format, try again");
             ##TODO: send back to UI class to take input
-        if not checkSeats(seats,cno):
+        if not self.checkSeats(seats,cno):
             print("Seats greater than seats in car")
 
         ##TODO check enroutes
@@ -76,6 +76,9 @@ def main():
     print(c.checkSeats(5,4))
     print(c.checkSeats(4,4))
     print(c.checkSeats(3,4))
+
+    c.post_new_ride_request("2018-02-01","cntr1","cntr2","12","don@mayor.yeg")
+    c.offer_ride("2018-02-01","don@mayor.yeg",4,12,"desc","cntr1","cntr2",4,[])
 
     ##WORKING
     ##print("Testing location checks: ")
