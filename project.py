@@ -6,6 +6,7 @@
 #NOTE: for the sake of handling all of the applications
 import sqlite3
 import time
+from commandClass import command
 #from dataConn import * #this will get all of the class functions
 #from tkinter import *
 
@@ -14,6 +15,7 @@ username = None
 
 connection = None
 cursor = None
+cmd = None
 
 def checkInput(promptString, fieldList, optional = False):
     # this function will check if a field has been inputted and will be
@@ -38,8 +40,11 @@ def initializeData():
     # this will set the database connection
     print("Please enter the database path:")
     path = input("Database Path: ")
-    print("\n")
-    # dataConn(path) OR dataConn.connect(path) NOTE: Whatever Curtis creates
+    try:
+        cmd = command(path)
+    except:
+        print("Invalid DB path.. try again")
+        initializeData()
     return
 
 # The following functions are for the login portion of the application
