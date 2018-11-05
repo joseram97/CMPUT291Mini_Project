@@ -175,17 +175,17 @@ def post_ride_request(date, pLoc, dLoc, amount, rid, email):
     connection.commit()
     return
 
-def get_ride_requests_by_email(date, pLoc, dLoc, amount, rid, email):
+def get_ride_requests_by_email(email):
     #Needed for Spec 5
     get_rides =     '''
                     SELECT * FROM requests WHERE email = :email;
                     '''
     cursor.execute(get_rides,{"email":email});
     connection.commit()
-    return
+    return cursor.fetchall()
 
 
-def delete_ride_by_id(rid):
+def delete_ride_request_by_id(rid):
     #Needed for Spec 5
     delete_rides =      '''
                         DELETE FROM requests WHERE rid = :rid;
@@ -216,15 +216,27 @@ def get_rides_by_member(driver):
                 '''
     cursor.execute(get_rides,{"driver":driver});
     connection.commit()
+    return cursor.fetchall()
+
+def send_message_to_member(email, msgTimestamp, sender, content, rno):
+    ##Needed for Spec #3
+    seen = 'N'
+    send_message =      '''
+                        INSERT INTO inbox(email, msgTimestamp, sender, content, rno, seen) VALUES
+                            (:email,:msgTimestamp,:sender,:content,:rno,:seen);
+                        '''
+    cursor.execute(send_message,{"email":email,"msgTimestamp":msgTimestamp,"sender":sender,"content":content,"rno":rno,"seen":seen});
+    connection.commit()
     return
 
-def send_message_to_member(email, msgTimestamp, sender, content, rno, seen):
-    ##Needed for Spec #3
-    send_message =     '''
-                    INSERT INTO inbox(email, msgTimestamp, sender, content, rno, seen) VALUES
-                        (:email,:msgTimestamp,:sender,:content,:rno,:seen);
-                    '''
-    cursor.execute(send_message,{"email":email,"msgTimestamp":msgTimestamp,"sender":sender,"content":content,"rno":rno,"seen":seen});
+def set_message_to_seen(email,msgTimestamp):
+    set_seen =  '''
+                UPDATE inbox
+                SET seen='Y'
+                WHERE email=:email
+                AND msgTimestamp=:msgTimestamp;
+                '''
+    cursor.execute(set_seen,{"email":email,"msgTimestamp":msgTimestamp});
     connection.commit()
     return
 
