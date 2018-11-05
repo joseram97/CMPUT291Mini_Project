@@ -259,6 +259,23 @@ def get_car_by_cno(cno):
     connection.commit()
     return cursor.fetchone()
 
+def get_car_by_driver_cno(cno,driver):
+    get_car =   '''
+                SELECT * FROM cars WHERE cno=:cno
+                AND owner=:driver;
+                '''
+    cursor.execute(get_car,{"cno":cno,"driver":driver})
+    connection.commit()
+    return cursor.fetchone()
+
+def get_car_by_driver(driver):
+    get_car =   '''
+                SELECT * FROM cars WHERE owner=:driver;
+                '''
+    cursor.execute(get_car,{"driver":driver})
+    connection.commit()
+    return cursor.fetchone()
+
 def get_max_ride_id():
     get_max = '''
               SELECT MAX(rno) FROM rides r;
