@@ -182,8 +182,9 @@ def post_ride_request(date, pLoc, dLoc, amount, rid, email):
     connection.commit()
     return
 
-def get_ride_requests_by_email(date, pLoc, dLoc, amount, rid, email):
+def get_ride_requests_by_email(email):
     #Needed for Spec 5
+    # these were the other parameters date, pLoc, dLoc, amount, rid, 
     get_rides =     '''
                     SELECT * FROM requests WHERE email = :email;
                     '''

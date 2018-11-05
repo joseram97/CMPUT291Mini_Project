@@ -272,6 +272,85 @@ def postRideRequestUI():
     return
 
 def searchDeleteRequestUI():
+    # search for requests and allow deletion of requests
+    # give the choice to the user if they wish to display all of the requests
+    # or search for a specific location of some requests
+    print("SEARCH/DELETE RIDE REQUESTS:\nThis function will allow to you")
+    print("search for the rides that you have requested. You will also have")
+    print("the option to delete any of the ride requests that you have up.\n")
+    print("Please select one of the following options:")
+    print("1 - See all ride requests\n2 - Search for ride requests")
+    print("3 - Go back to main menu")
+    # ride Requests will hold all of the ride information
+    rideRequests = None
+    while True:
+        userInput = input("Input the number selection: ")
+        if userInput == "1":
+            # get all ride requests
+            print("Showing all ride requests...\n")
+            #rideRequests = dataConn.get_ride_requests_by_email(username)
+            break
+        elif userInput == "2":
+            # search for desired ride requests
+            print("SEARCHING FOR RIDES:")
+            print("In order to search for ride requests, you will need to provide")
+            print("a location code or city name.\n")
+            location = input("Provide the location: ")
+            #rideRequests = dataConn.get_requests_by_location(location)
+            break
+        elif userInput == "3":
+            # exit out of the function
+            print("Exiting function...")
+            return
+        else:
+            print("Not a valid selection! Try again...")
+
+    # print all of the ride requests from the user
+    page_limit = 5
+    i = 0
+    print("-------------------------------------------------------------------------")
+    print("RIDE REQUEST INFORMATION")
+    print("All ride request information will be shown below. Only a max of 5 requests will")
+    print("be shown at a time. To keep seeing 5 more, press ENTER. To leave type")
+    print("'q' and press ENTER. To delete a request, enter in the")
+    print("number of the REQUEST SELECTION. After deletion, ")
+    print("the system will take you back to the main menu.")
+    for ride in rideRequests:
+        # display all of the ride information
+        if i%5 == 0:
+            while True:
+                displayMore = input("[MORE?]:")
+                if displayMore == "q":
+                    print("Taking you back to main menu...")
+                    return
+                elif displayMore == "":
+                    break
+                selection = None
+                try:
+                    selection = int(displayMore)
+                    if selection > i:
+                        print("Not a valid selection")
+                    else:
+                        # the request must be deleted
+                        sure = input("Are you sure? (y/n): ")
+                        if sure == "y":
+                            print("Deleting request...")
+                            # dataConn.delete_ride_by_id(ride[0])
+                            print("Request deleted. Back to main menu...")
+                            return
+                        elif sure == "n":
+                            continue
+                except ValueError:
+                    print("Not a number")
+
+        # user wants to see more
+        print("///////////////////////////////////////////////////////")
+        print("REQUEST SELECTION: " + str(i+1))
+        print("Ride ID: {}\nEmail: {}").format(ride[0], ride[1])
+        print("Date: {}\nPick up location: {}").format(ride[2], ride[3])
+        print("Drop off location: {}\nAmount: {}").format(ride[4], ride[5])
+        print("////////////////////////////////////////////////////////")
+
     return
 
 def generateMessages():
