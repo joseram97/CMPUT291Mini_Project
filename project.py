@@ -126,6 +126,88 @@ def loginPrompt():
 #-------------------END LOGIN------------------------------------
 
 #The following functions are for the main application
+# the parameters are the following:
+#      resultList <- contains all the data for visuals
+#      functionType <- the type of function that was deploted (e.g. "REQUEST",
+#                                                                   "BOOK",
+#                                                                   "RIDE")
+def listSelection(resultList, functionType):
+    # this function will be in charge of formatting the output of lists of
+    # data for the system
+    page_limit = 5
+    i = 0
+    if functionType == "RIDE":
+        print("-------------------------------------------------------------------------")
+        print("RIDE INFORMATION")
+        print("All ride information will be shown below. Only a max of 5 rides will")
+        print("be shown at a time. To keep seeing 5 more, press ENTER. To leave type")
+        print("'q' and press ENTER. To message the driver of a ride, enter in the")
+        print("number of the RIDE SELECTION and type in a message. After message, ")
+        print("the system will take you back to the main menu.")
+    elif functionType == "REQUEST":
+        print("-------------------------------------------------------------------------")
+        print("RIDE REQUEST INFORMATION")
+        print("All ride request information will be shown below. Only a max of 5 requests will")
+        print("be shown at a time. To keep seeing 5 more, press ENTER. To leave type")
+        print("'q' and press ENTER. To delete a request, enter in the")
+        print("number of the REQUEST SELECTION. After deletion, ")
+        print("the system will take you back to the main menu.")
+
+    for ride in resultList:
+        # display all of the ride information
+        if i%5 == 0:
+            while True:
+                displayMore = input("[MORE?]:")
+                if displayMore == "q":
+                    print("Taking you back to main menu...")
+                    return
+                elif displayMore == "":
+                    break
+                selection = None
+                try:
+                    selection = int(displayMore)
+                    if selection > i:
+                        print("Not a valid selection")
+                    else:
+                        if functionType == "RIDE":
+                            sendMessage(ride[7], username, ride[0])
+                        elif functionType == "REQUEST":
+                            # the request must be deleted
+                            sure = input("Are you sure? (y/n): ")
+                            if sure == "y":
+                                print("Deleting request...")
+                                # TODO: dataConn.delete_ride_by_id(ride[0])
+                                print("Request deleted. Back to main menu...")
+                                return
+                            elif sure == "n":
+                                continue
+
+                        return
+                except ValueError:
+                    print("Not a number")
+
+        if functionType == "RIDE":
+        # user wants to see more
+            print("///////////////////////////////////////////////////////")
+            print("RIDE SELECTION: " + str(i+1))
+            print("Ride Number: {}\nRide price: {}").format(ride[0], ride[1])
+            print("Date: {}\nNumber of seats: {}").format(ride[2], ride[3])
+            print("Luggage Description: {}\nStart location: {}").format(ride[4], ride[5])
+            print("End Location: {}\nDriver: {}").format(ride[6], ride[7])
+            print("CAR INFORMATION")
+            print("Car number: {}\nMake: {}\nModel: {}").format(ride[8], ride[9], ride[10])
+            print("Year: {}\nSeats: {}\nOwner: {}").format(ride[11], ride[12], ride[13])
+            print("////////////////////////////////////////////////////////")
+        elif functionType == "REQUEST":
+            print("///////////////////////////////////////////////////////")
+            print("REQUEST SELECTION: " + str(i+1))
+            print("Ride ID: {}\nEmail: {}").format(ride[0], ride[1])
+            print("Date: {}\nPick up location: {}").format(ride[2], ride[3])
+            print("Drop off location: {}\nAmount: {}").format(ride[4], ride[5])
+            print("////////////////////////////////////////////////////////")
+
+    return
+
 def offerRideUI():
     # this is the offer ride UI for the user to selection the options from
     print("OFFER RIDES:\nThis function will allow you to offer a ride as a")
@@ -204,48 +286,7 @@ def searchRideUI():
     # Query for all of the locations
     resultRides = None # dataConn(searchLocations)
     # display all of the search results
-    page_limit = 5
-    i = 0
-    print("-------------------------------------------------------------------------")
-    print("RIDE INFORMATION")
-    print("All ride information will be shown below. Only a max of 5 rides will")
-    print("be shown at a time. To keep seeing 5 more, press ENTER. To leave type")
-    print("'q' and press ENTER. To message the driver of a ride, enter in the")
-    print("number of the RIDE SELECTION and type in a message. After message, ")
-    print("the system will take you back to the main menu.")
-    for ride in resultRides:
-        # display all of the ride information
-        if i%5 == 0:
-            while True:
-                displayMore = input("[MORE?]:")
-                if displayMore == "q":
-                    print("Taking you back to main menu...")
-                    return
-                elif displayMore == "":
-                    break
-                selection = None
-                try:
-                    selection = int(displayMore)
-                    if selection > i:
-                        print("Not a valid selection")
-                    else:
-                        sendMessage(ride[7], username, ride[0])
-                        return
-                except ValueError:
-                    print("Not a number")
-
-        # user wants to see more
-        print("///////////////////////////////////////////////////////")
-        print("RIDE SELECTION: " + str(i+1))
-        print("Ride Number: {}\nRide price: {}").format(ride[0], ride[1])
-        print("Date: {}\nNumber of seats: {}").format(ride[2], ride[3])
-        print("Luggage Description: {}\nStart location: {}").format(ride[4], ride[5])
-        print("End Location: {}\nDriver: {}").format(ride[6], ride[7])
-        print("CAR INFORMATION")
-        print("Car number: {}\nMake: {}\nModel: {}").format(ride[8], ride[9], ride[10])
-        print("Year: {}\nSeats: {}\nOwner: {}").format(ride[11], ride[12], ride[13])
-        print("////////////////////////////////////////////////////////")
-
+    listSelection(resultRides, "RIDE")
 
     return
 
@@ -311,50 +352,8 @@ def searchDeleteRequestUI():
             print("Not a valid selection! Try again...")
 
     # print all of the ride requests from the user
-    page_limit = 5
-    i = 0
-    print("-------------------------------------------------------------------------")
-    print("RIDE REQUEST INFORMATION")
-    print("All ride request information will be shown below. Only a max of 5 requests will")
-    print("be shown at a time. To keep seeing 5 more, press ENTER. To leave type")
-    print("'q' and press ENTER. To delete a request, enter in the")
-    print("number of the REQUEST SELECTION. After deletion, ")
-    print("the system will take you back to the main menu.")
-    for ride in rideRequests:
-        # display all of the ride information
-        if i%5 == 0:
-            while True:
-                displayMore = input("[MORE?]:")
-                if displayMore == "q":
-                    print("Taking you back to main menu...")
-                    return
-                elif displayMore == "":
-                    break
-                selection = None
-                try:
-                    selection = int(displayMore)
-                    if selection > i:
-                        print("Not a valid selection")
-                    else:
-                        # the request must be deleted
-                        sure = input("Are you sure? (y/n): ")
-                        if sure == "y":
-                            print("Deleting request...")
-                            # dataConn.delete_ride_by_id(ride[0])
-                            print("Request deleted. Back to main menu...")
-                            return
-                        elif sure == "n":
-                            continue
-                except ValueError:
-                    print("Not a number")
+    listSelection(rideRequests, "REQUEST")
 
-        # user wants to see more
-        print("///////////////////////////////////////////////////////")
-        print("REQUEST SELECTION: " + str(i+1))
-        print("Ride ID: {}\nEmail: {}").format(ride[0], ride[1])
-        print("Date: {}\nPick up location: {}").format(ride[2], ride[3])
-        print("Drop off location: {}\nAmount: {}").format(ride[4], ride[5])
-        print("////////////////////////////////////////////////////////")
 
     return
 
@@ -386,27 +385,34 @@ def runApp():
     # user has not seen yet
     generateMessages()
 
-    while(True):
-        # set up all of the possible options for the user to interact with
-        print("The following selections may be chosen to proceed within the app:")
-        print("1 - Offer a ride\n2 - Search for a ride\n3 - Book members or " +
-              "cancel bookings\n4 - Post a ride request\n5 - Search and delete" +
-              " ride requests\n6 - Exit application\n")
-        selection = input("Please type in the desired selection(number): ")
-        print("\n")
+
+    # set up all of the possible options for the user to interact with
+    print("The following selections may be chosen to proceed within the app:")
+    print("1 - Offer a ride\n2 - Search for a ride\n3 - Book members or " +
+          "cancel bookings\n4 - Post a ride request\n5 - Search and delete" +
+          " ride requests\n6 - Exit application\n")
+    selection = input("Please type in the desired selection(number): ")
+    while True:
         if selection == "1":
             offerRideUI()
+            break
         elif selection == "2":
             searchRideUI()
+            break
         elif selection == "3":
             bookMembersUI()
+            break
         elif selection == "4":
             postRideRequestUI()
+            break
         elif selection == "5":
             searchDeleteRequestUI()
+            break
         elif selection == "6":
             print("Logging out of application...")
             break
+        else:
+            print("Invalid selection. Try again...")
 
     return
 
