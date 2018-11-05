@@ -54,6 +54,13 @@ def register(email,name,phone,password):
     connection.commit()
     return
 
+def check_email(email):
+    q = '''
+        SELECT * FROM members WHERE email=:email;
+        '''
+    cursor.execute(q,{"email":email})
+    connection.commit()
+    return cursor.fetchone()
 
 #Returns all locations by lCode
 def get_locations_by_location_code(lCode):
