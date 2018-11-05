@@ -108,13 +108,24 @@ def offer_ride(date,driver,seats,price,desc,src,dst,cno,enroute):
     connection.commit()
     return
 
-def check_login(email,pass):
+
+def check_login(email,password):
     query = '''
             SELECT * FROM members WHERE email=:email AND pwd=:pass
             '''
-    cursor.execute(query,{"email":email,"pass":pass})
+    cursor.execute(query,{"email":email,"pass":password})
     connection.commit()
     return cursor.fetchone()
+
+def register(email,name,phone,password):
+    register=       '''
+                    INSERT INTO members(email, name, phone, pwd) VALUES
+                        (:email,:name,:phone,:pwd)
+                    '''
+    cursor.execute(register,{"email":email,"name":name,"phone":phone,"pwd":password})
+    connection.commit()
+    return
+
 
 #Returns all locations by lCode
 def get_locations_by_location_code(lCode):
