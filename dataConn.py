@@ -34,7 +34,7 @@ def offer_ride(date,driver,seats,price,desc,src,dst,cno,enroute):
                     '''
     cursor.execute(offer_ride,{"rno":rno,"price":price,"date":date,"seats":seats,"desc":desc,"src":src,"dst":dst,"driver":driver,"cno":cno});
     connection.commit()
-    return
+    return rno
 
 
 def check_login(email,password):
@@ -71,6 +71,15 @@ def get_locations_by_location_code(lCode):
     connection.commit()
     return cursor.fetchone()
 
+def add_enroute(lcode,rno):
+    add_enroute = '''
+                  INSERT INTO enroute(rno,lcode) VALUES
+                  (:rno,:lcode);
+                  '''
+    cursor.execute(add_enroute,{"rno":rno,"lcode":lcode});
+    connection.commit()
+    return
+
 #Returns all locations by keyword **Used if lCode is not found**
 def get_locations_by_keyword(keyword):
     keyword = '%'+keyword+'%'
@@ -101,11 +110,11 @@ def search_for_rides(listKeys):
     ride_search =   '''
                     SELECT DISTINCT r.rno, r.dst, r.src
                     FROM rides r, enroute e, locations l1, locations l2, locations l3
-                    WHERE (r.rno = e.rno
+                    WHERE r.rno = e.rno
                     AND e.lcode = l3.lcode
                     AND r.src = l1.lcode
-                    AND r.dst = l2.lcode)
-                    AND (l1.city LIKE :key1
+                    AND r.dst = l2.lcode
+                    AND l1.city LIKE :key1
                     OR l2.city LIKE :key1
                     OR l3.city LIKE :key1
                     OR l1.prov LIKE :key1
@@ -113,7 +122,39 @@ def search_for_rides(listKeys):
                     OR l3.prov LIKE :key1
                     OR l1.address LIKE :key1
                     OR l2.address LIKE :key1
-                    OR l3.address LIKE :key1);
+                    OR l3.address LIKE :key1
+                    INTERSECT
+                    SELECT DISTINCT r.rno, r.dst, r.src
+                    FROM rides r, enroute e, locations l1, locations l2, locations l3
+                    WHERE r.rno = e.rno
+                    AND e.lcode = l3.lcode
+                    AND r.src = l1.lcode
+                    AND r.dst = l2.lcode
+                    AND l1.city LIKE :key2
+                    OR l2.city LIKE :key2
+                    OR l3.city LIKE :key2
+                    OR l1.prov LIKE :key2
+                    OR l2.prov LIKE :key2
+                    OR l3.prov LIKE :key2
+                    OR l1.address LIKE :key2
+                    OR l2.address LIKE :key2
+                    OR l3.address LIKE :key2
+                    INTERSECT
+                    SELECT DISTINCT r.rno, r.dst, r.src
+                    FROM rides r, enroute e, locations l1, locations l2, locations l3
+                    WHERE r.rno = e.rno
+                    AND e.lcode = l3.lcode
+                    AND r.src = l1.lcode
+                    AND r.dst = l2.lcode
+                    AND l1.city LIKE :key3
+                    OR l2.city LIKE :key3
+                    OR l3.city LIKE :key3
+                    OR l1.prov LIKE :key3
+                    OR l2.prov LIKE :key3
+                    OR l3.prov LIKE :key3
+                    OR l1.address LIKE :key3
+                    OR l2.address LIKE :key3
+                    OR l3.address LIKE :key3;
                     '''
 
     cursor.execute(ride_search,{"key1":key1,"key2":key2,"key3":key3});

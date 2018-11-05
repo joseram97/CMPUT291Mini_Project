@@ -26,7 +26,7 @@ def checkInput(promptString, fieldList, optional = False):
             return False
         elif userInput != "" or optional:
             break
-        elif userInput == "Date (dd/mm/yyyy): ":
+        elif userInput == "Date (yyyy-mm-dd): ":
             #check that the format is correct
             #TODO: check format is correct
             break
@@ -626,7 +626,7 @@ def postRideRequestUI():
     # The user will be able to post a ride request that they want a driver to
     # start offering
     print("REQUEST A RIDE:\nThis function will allow you to post a ride request")
-    print("on the application. You must provide a date(dd/mm/yyyy), pick up")
+    print("on the application. You must provide a date(yyyy-mm-dd), pick up")
     print("location, drop off location, and the amount willing to pay for a")
     print("seat.\n")
     print("Please fill in the required fields below:")
@@ -637,6 +637,7 @@ def postRideRequestUI():
         if not checkInput(prompt, fieldResults):
             return
 
+    print(fieldResults[0])
     if not cmd.checkDate(fieldResults[0]):
         print("Invalid Date")
         postRideRequestUI()
@@ -728,7 +729,7 @@ def runApp():
         print("The following selections may be chosen to proceed within the app:")
         print("1 - Offer a ride\n2 - Search for a ride\n3 - Book members or " +
               "cancel bookings\n4 - Post a ride request\n5 - Search and delete" +
-              " ride requests\n6 - Exit application\n")
+              " ride requests\n6 - Exit application\n7 - Log out")
         selection = input("Please type in the desired selection(number): ")
         if selection == "1":
             offerRideUI()
@@ -741,8 +742,12 @@ def runApp():
         elif selection == "5":
             searchDeleteRequestUI()
         elif selection == "6":
-            print("Logging out of application...")
+            print("Exiting out of application...")
             break
+        elif selection == "7":
+            print("Logging out.. restaring app")
+            user = None
+            main()
         else:
             print("Invalid selection. Try again...")
 
