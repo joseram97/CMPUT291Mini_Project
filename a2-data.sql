@@ -4,31 +4,31 @@
 ------------- TODO -------------
 -- add multiple rides that serve a request for q4
 -- add new locations so that there are repeated cities with different provinces for q4
--- same as above but for provinces 
+-- same as above but for provinces
 -- add cities that only have enroute destinations for q6
 -- add multiple bookings for a single ride that fills up the total seats for q7
 ------------- TODO -------------
 
 -- |email|name|phone|
-insert into members values 
-        ('jane_doe@abc.ca', 'Jane Maria-Ann Doe', '780-342-7584'),
-        ('bob@123.ca', 'Bob Williams', '780-342-2834'),
-        ('maria@xyz.org', 'Maria Calzone', '780-382-3847'),
-        ('the99@oil.com', 'Wayne Gretzky', '780-382-4382'),
-        ('connor@oil.com', 'Connor Mcdavid', '587-839-2838'),
-        ('don@mayor.yeg', 'Don Iveson', '780-382-8239'),
-        ('darryl@oil.com', 'Darryl Katz', '604-238-2380'),
-        ('reilly@esks.org', 'Mike Reilly', '780-389-8928'),
-        ('mess@marky.mark', 'Mark Messier', '516-382-8939'),
-        ('mal@serenity.ca', 'Nathan Fillion', '780-389-2899'),
-        ('kd@lang.ca', 'K. D. Lang', '874-384-3890'),
-        ('nellie@five.gov', 'Nellie McClung', '389-930-2839'),
-        ('marty@mc.fly', 'Micheal J. Fox', '780-382-3899'),
-        ('cadence@rap.fm', 'Roland Pemberton', '780-938-2738'),
-        ('john@acorn.nut', 'John Acorn', '780-389-8392');
-                
+insert into members values
+        ('jane_doe@abc.ca', 'Jane Maria-Ann Doe', '780-342-7584','123'),
+        ('bob@123.ca', 'Bob Williams', '780-342-2834','123'),
+        ('maria@xyz.org', 'Maria Calzone', '780-382-3847','123'),
+        ('the99@oil.com', 'Wayne Gretzky', '780-382-4382','123'),
+        ('connor@oil.com', 'Connor Mcdavid', '587-839-2838','123'),
+        ('don@mayor.yeg', 'Don Iveson', '780-382-8239','123'),
+        ('darryl@oil.com', 'Darryl Katz', '604-238-2380','123'),
+        ('reilly@esks.org', 'Mike Reilly', '780-389-8928','123'),
+        ('mess@marky.mark', 'Mark Messier', '516-382-8939','123'),
+        ('mal@serenity.ca', 'Nathan Fillion', '780-389-2899','123'),
+        ('kd@lang.ca', 'K. D. Lang', '874-384-3890','123'),
+        ('nellie@five.gov', 'Nellie McClung', '389-930-2839','123'),
+        ('marty@mc.fly', 'Micheal J. Fox', '780-382-3899','123'),
+        ('cadence@rap.fm', 'Roland Pemberton', '780-938-2738','123'),
+        ('john@acorn.nut', 'John Acorn', '780-389-8392','123');
+
 -- |cno|make|model|year|seats|owner|
-insert into cars values 
+insert into cars values
         (1, 'Honda', 'Civic', 2010, 4, 'jane_doe@abc.ca'),
         (2, 'Ford', 'E-350', 2012, 15, 'bob@123.ca'),
         (3, 'Toyota', 'Rav-4', 2016, 4, 'don@mayor.yeg'),
@@ -135,7 +135,7 @@ insert into enroute values
         (12, 'yyc1'),
         (16, 'sk1'),
         (17, 'cntr2');
-        
+
 -- |rid|email|rdate|pickup|dropoff|amount|
 insert into requests values
         (1, 'darryl@oil.com', '2018-07-23', 'nrth1', 'cntr1', 10),
@@ -147,4 +147,3 @@ insert into requests values
         (7, 'mess@marky.mark', '2018-10-11', 'nrth2', 'sth3', 1),
         (8, 'mess@marky.mark', '2018-10-11', 'nrth2', 'sth3', 100),
         (9, 'jane_doe@abc.ca', '2018-04-26', 'cntr3', 'cntr2', 10);
-

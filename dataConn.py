@@ -1,5 +1,5 @@
 import sqlite3
-
+import datetime
 #this is the data class that will hold all of the information for the
 # mini-project
 
@@ -104,9 +104,28 @@ def offer_ride(date,driver,seats,price,desc,src,dst,cno,enroute):
                     INSERT INTO rides(rno, price, rdate, seats, lugDesc, src, dst, driver, cno) VALUES
                         (:rno,:price,:date,:seats,:desc,:src,:dst,:driver,:cno);
                     '''
-    cursor.execute(send_message,{"rno":rno,"price":price,"date":date,"seats":seats,"desc":desc,"src":src,"dst":dst,"driver":driver,"cno":cno});
+    cursor.execute(offer_ride,{"rno":rno,"price":price,"date":date,"seats":seats,"desc":desc,"src":src,"dst":dst,"driver":driver,"cno":cno});
     connection.commit()
     return
+
+
+def check_login(email,password):
+    query = '''
+            SELECT * FROM members WHERE email=:email AND pwd=:pass
+            '''
+    cursor.execute(query,{"email":email,"pass":password})
+    connection.commit()
+    return cursor.fetchone()
+
+def register(email,name,phone,password):
+    register=       '''
+                    INSERT INTO members(email, name, phone, pwd) VALUES
+                        (:email,:name,:phone,:pwd)
+                    '''
+    cursor.execute(register,{"email":email,"name":name,"phone":phone,"pwd":password})
+    connection.commit()
+    return
+
 
 #Returns all locations by lCode
 def get_locations_by_location_code(lCode):
@@ -145,27 +164,21 @@ def search_for_rides(listKeys):
     key3 = '%'+keys[2]+'%'
 
     ride_search =   '''
-                    SELECT DISTINCT r.*
-                    FROM rides r, enroute e, locations l
-                    WHERE r.rno = e.rno
-                    AND l.lCode = e.lCode
-                    AND l.city LIKE :key1
-                    OR l.prov LIKE :key1
-                    OR l.address LIKE :key1
-                    INTERSECT
-                    SELECT DISTINCT r.*
-                    FROM rides r, locations l
-                    WHERE r.src = l.lCode
-                    AND l.city LIKE :key2
-                    OR l.prov LIKE :key2
-                    OR l.address LIKE :key2
-                    INTERSECT
-                    SELECT DISTINCT r.*
-                    FROM rides r, locations l
-                    WHERE r.dst = l.lCode
-                    AND l.city LIKE :key3
-                    OR l.prov LIKE :key3
-                    OR l.address LIKE :key3;
+                    SELECT DISTINCT r.rno, r.dst, r.src
+                    FROM rides r, enroute e, locations l1, locations l2, locations l3
+                    WHERE (r.rno = e.rno
+                    AND e.lcode = l3.lcode
+                    AND r.src = l1.lcode
+                    AND r.dst = l2.lcode)
+                    AND (l1.city LIKE :key1
+                    OR l2.city LIKE :key1
+                    OR l3.city LIKE :key1
+                    OR l1.prov LIKE :key1
+                    OR l2.prov LIKE :key1
+                    OR l3.prov LIKE :key1
+                    OR l1.address LIKE :key1
+                    OR l2.address LIKE :key1
+                    OR l3.address LIKE :key1);
                     '''
 
     cursor.execute(ride_search,{"key1":key1,"key2":key2,"key3":key3});
@@ -184,16 +197,16 @@ def post_ride_request(date, pLoc, dLoc, amount, rid, email):
 
 def get_ride_requests_by_email(email):
     #Needed for Spec 5
-    # these were the other parameters date, pLoc, dLoc, amount, rid, 
+    # these were the other parameters date, pLoc, dLoc, amount, rid,
     get_rides =     '''
                     SELECT * FROM requests WHERE email = :email;
                     '''
     cursor.execute(get_rides,{"email":email});
     connection.commit()
-    return
+    return cursor.fetchall()
 
 
-def delete_ride_by_id(rid):
+def delete_ride_request_by_id(rid):
     #Needed for Spec 5
     delete_rides =      '''
                         DELETE FROM requests WHERE rid = :rid;
@@ -203,8 +216,33 @@ def delete_ride_by_id(rid):
     return
 
 def get_requests_by_location(lCode):
-    ##TODO: see spec number 5 for details
-    return
+    lCodeP = '%'+lCode+'%'
+    get_req =     '''
+                    SELECT DISTINCT r.rid, r.pickup, r.dropoff
+                    FROM requests r
+                    WHERE r.pickup = :lcode
+                    UNION
+                    SELECT DISTINCT r.rid, r.pickup, r.dropoff
+                    FROM requests r
+                    WHERE r.pickup IN (SELECT lcode
+                                       FROM locations
+                                       WHERE city LIKE :lcodeP);
+                    '''
+    cursor.execute(get_req,{"lcode":lCode,"lcodeP":lCodeP});
+    connection.commit()
+    return cursor.fetchall()
+
+def get_bookings_by_driver(driverEmail):
+    ##Needed for Spec #3
+    get_bookings =      '''
+                        SELECT b.*
+                        FROM bookings b, rides r
+                        WHERE r.driver = :driverEmail
+                        AND r.rno=b.rno;
+                        '''
+    cursor.execute(get_bookings,{"driverEmail":driverEmail});
+    connection.commit()
+    return cursor.fetchall()
 
 def remove_booking_by_id(bno):
     ##Needed for Spec #3
@@ -215,25 +253,56 @@ def remove_booking_by_id(bno):
     connection.commit()
     return
 
-def get_rides_by_member(driver):
+def get_rides_with_available_seats_by_member(driver):
     ##Needed for Spec #3
+    ##Gets all FUTURE rides that the person is offering with how many seats remaining
     get_rides = '''
-                SELECT b.* FROM rides r, bookings b,
+                SELECT r.rno,(r.seats-SUM(IFNULL(b.seats,0)))
+                FROM rides r
+                LEFT OUTER JOIN bookings b
+                ON r.rno=b.rno
                 WHERE r.driver=:driver
-                AND r.rno=b.rno;
+                AND r.rdate > date('now')
+                GROUP BY b.rno
+
                 '''
     cursor.execute(get_rides,{"driver":driver});
     connection.commit()
+    return cursor.fetchall()
+
+def book_member_for_ride(rno,email,seatsBooked,cost,src,dst):
+    ##Needed for Spec #3
+    bno = get_max_booking_id()[0]
+    book_member = '''
+                INSERT INTO bookings(bno,email,rno,cost,seats,pickup,dropoff) VALUES
+                    (:bno,:email,:rno,:cost,:seats,:src,:dst)
+                '''
+    cursor.execute(book_member,{"bno":bno,"email":email,"rno":rno,"cost":cost,"src":src,"dst":dst});
+    connection.commit()
     return
 
-def send_message_to_member(email, msgTimestamp, sender, content, rno, seen):
+
+
+def send_message_to_member(email, sender, content, rno):
     ##Needed for Spec #3
-    # I think msgTimestamp should be initialize to date.now in SQL
-    send_message =     '''
-                    INSERT INTO inbox(email, msgTimestamp, sender, content, rno, seen) VALUES
-                        (:email,:msgTimestamp,:sender,:content,:rno,:seen);
-                    '''
+    msgTimestamp = datetime.now().strftime('%Y-%m-%d');
+    seen = 'N'
+    send_message =      '''
+                        INSERT INTO inbox(email, msgTimestamp, sender, content, rno, seen) VALUES
+                            (:email,:msgTimestamp,:sender,:content,:rno,:seen);
+                        '''
     cursor.execute(send_message,{"email":email,"msgTimestamp":msgTimestamp,"sender":sender,"content":content,"rno":rno,"seen":seen});
+    connection.commit()
+    return
+
+def set_message_to_seen(email,msgTimestamp):
+    set_seen =  '''
+                UPDATE inbox
+                SET seen='Y'
+                WHERE email=:email
+                AND msgTimestamp=:msgTimestamp;
+                '''
+    cursor.execute(set_seen,{"email":email,"msgTimestamp":msgTimestamp});
     connection.commit()
     return
 
@@ -261,14 +330,10 @@ def get_max_request_id():
     connection.commit()
     return cursor.fetchone()
 
-def main():
-    #######################
-    ## SQL TESTING TODOS ##
-    #######################
-    ##TEST ALL SQL QUERYS##
-    ##POST SUCCESSES HERE##
-    #######################
-    return
-
-if __name__ == "__main__":
-    main()
+def get_max_booking_id():
+    get_max = '''
+              SELECT MAX(bno) FROM bookings b;
+              '''
+    cursor.execute(get_max)
+    connection.commit()
+    return cursor.fetchone()
