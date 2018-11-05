@@ -160,6 +160,19 @@ def offerRideUI():
     return
 
 def searchRideUI():
+    # This is the search ride UI for the application. The user should be able to
+    # search for rides that they are interested in
+    print("SEARCH FOR RIDES:\nThis function will allow you to search for rides")
+    print("within 1-3 locations.")
+    print("Please provide below the 1-3 locations")
+    numLocations = input("How many locations will you be searching?: ")
+    searchLocations = []
+    for i in range(1, numLocations+1):
+        prompt = "Search Location[" + Integer.toString(i) + "]"
+        if not checkInput(prompt, searchLocations):
+            return # leave the function
+    # Query for all of the locations
+    # display all of the search results
     return
 
 def bookMembersUI():
