@@ -22,6 +22,13 @@ class command:
         user = check_login(email,pwd)
         return user
 
+    def register_new_user(self,email,name,phone,password):
+        try:
+            register(email,name,phone,password)
+        except:
+            raise Exception("Non-Unique email")
+
+
     ##3 Keywords and Number of keywords passed!
     ## Leave key2,3 as "!" (STRING) if unused "!" will never match a location and act as if it
     ## does not exist

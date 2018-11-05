@@ -72,25 +72,22 @@ def registerUser():
         if (email == "EXIT"):
             print("Exiting...")
             return False
-        # check the email if it already exists
-        # TODO: creating email query for the database and return boolean
-        isUnique = True
-        if (isUnique):
-            break
-        else:
-            print("This email is not unique. Please try again.\n")
-            print(" If you want to exit, type in EXIT\n")
+        break
     # done the while loop
     # get the rest of the information
     name = input("Full Name: ")
     phone = input("Phone Number(###-###-####): ")
-    # TODO: check if the formatting of the phone number is good
     password = input("Password: ")
     print("\n")
     print("You will now be returned to the login screen...\n")
     # Now insert the user data into the database and return to the login screen
-    # dataConn.insert(TODO: query for creating the user into the database)
-    return True
+    try:
+        cmd.register_new_user(email,name,phone,password)
+        return True
+    except:
+        print("Non-unique email address.. returned to login")
+        loginPrompt()
+        return False
 
 def loginUser():
     # get the user to login to the application
