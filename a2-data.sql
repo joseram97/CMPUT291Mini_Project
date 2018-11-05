@@ -151,6 +151,7 @@ insert into requests values
         (9, 'jane_doe@abc.ca', '2018-04-26', 'cntr3', 'cntr2', 10);
 
 -- This is the insert of data to the inboxes for members
+-- THIS WAS MADE BY JOSE AND ADDED ON AS EXTRA DATA for Mini-project 1
 -- |email|msgTimeStamp|sender|content|rno|seen|
 insert into inbox values
         ('mal@serenity.ca', '2018-11-06', 'don@mayor.yeg', 'Your ride for rno:[41] is booked!', 41, 'n'),
