@@ -211,11 +211,6 @@ def listSelection(resultList, functionType):
     if functionType == "RIDE":
         print("-------------------------------------------------------------------------")
         print("RIDE INFORMATION")
-        print("All ride information will be shown below. Only a max of 5 rides will")
-        print("be shown at a time. To keep seeing 5 more, press ENTER. To leave type")
-        print("'q' and press ENTER. To message the driver of a ride, enter in the")
-        print("number of the RIDE SELECTION and type in a message. After message, ")
-        print("the system will take you back to the main menu.")
         if type(resultList) is type(None):
             print("No rides matching")
             return
@@ -466,7 +461,7 @@ def offerRideUI():
             return
     if not cmd.checkDate(inputList[0]):
         print("Invalid Date")
-        offerRideUI()
+        return
     ##Src is not proper loc
     srcChoice = inputList[4]
     dstChoice = inputList[5]
@@ -474,18 +469,24 @@ def offerRideUI():
         l = cmd.get_locations_by_keyword(inputList[4])
         if type(l) is type(None):
             print("No matching src locations.. restarting")
-            offerRideUI()
+            return
         else:
             srcChoice = printFive(l)
 
+    if not str.isdigit(inputList[1]):
+        print("WARNING: Seats is NOT a number the ride has NOT been offered")
+        return
 
+    if not str.isdigit(inputList[2]):
+        print("WARNING: price is NOT a number the ride has NOT been offered")
+        return
 
     ##Dst is not proper loc
     if not cmd.check_location(inputList[5]):
         l = cmd.get_locations_by_keyword(inputList[5])
         if type(l) is type(None):
             print("No matching dst locations.. restarting")
-            offerRideUI()
+            return
         else:
             dstChoice = printFive(l)
     # get a set of enroute locations
@@ -509,7 +510,7 @@ def offerRideUI():
 
     if not cmd.check_car_ownership(inputList[-1],user[0]):
         print("You do not own this vehicle")
-        offerRideUI()
+        return
     # now that we have all of the information, we query for the rides
     cmd.offer_ride(inputList[0],user[0],inputList[1],inputList[2],inputList[3],srcChoice,dstChoice,inputList[-1],enroute)
     print("Successfully added offered ride! Returning to the main menu...\n")
@@ -556,9 +557,16 @@ def searchRideUI():
     print("SEARCH FOR RIDES:\nThis function will allow you to search for rides")
     print("within 1-3 locations.")
     print("Please provide below the 1-3 locations")
-    numLocations = int(input("How many locations will you be searching?: "))
+    numLocations = input("How many locations will you be searching?: ")
+    if str.isdigit(numLocations):
+        numLocations = int(numLocations)
+    else:
+        print("WARNING: location number is NOT a number, returning to main menu")
+        return
+
     if numLocations > 3:
         numLocations = 3
+
     searchLocations = []
     for i in range(1, numLocations+1):
         prompt = "Search Location[" + str(i) + "]: "
@@ -617,21 +625,28 @@ def postRideRequestUI():
         if not checkInput(prompt, fieldResults):
             return
 
-    print(fieldResults[0])
     if not cmd.checkDate(fieldResults[0]):
         print("Invalid Date")
         postRideRequestUI()
+        return
     ##Src is not proper loc
     srcChoice = fieldResults[1]
     dstChoice = fieldResults[2]
     if not cmd.check_location(fieldResults[1]):
         print("No matching src locations.. restarting")
         postRideRequestUI()
+        return
+
+    if not str.isdigit(fieldResults[3]):
+        print("WARNING: price is NOT a number the request has NOT been posted")
+        postRideRequestUI()
+        return
 
     ##Dst is not proper loc
     if not cmd.check_location(fieldResults[2]):
         print("No matching dst locations.. restarting")
         postRideRequestUI()
+        return
 
     # with all of the information, insert it into the database
     print("Posting...")
