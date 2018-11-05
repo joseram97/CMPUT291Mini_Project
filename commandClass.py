@@ -10,6 +10,14 @@ class command:
     def __init__(self, path):
         connect(path)
 
+
+    def post_new_ride_request(date,pLoc,dLoc,amount,email):
+        if not checkDate(date):
+            print("Improper date format, try again");
+        rid = get_max_request_id()[0] + 1
+        post_ride_request(date,pLoc,dLoc,rid,amount,email)
+        return
+
     ##3 Keywords and Number of keywords passed!
     ## Leave key2,3 as "!" (STRING) if unused "!" will never match a location and act as if it
     ## does not exist
@@ -75,7 +83,7 @@ def main():
     ##for row in c.checkLocationCode("Edmonton"):
     ##    print("{0}: {1} {2} {3}".format(row[0],row[1],row[2],row[3]))
 
-    for row in c.searchForRides("Edmonton","!","!"):
+    for row in c.searchForRides("Edmonton","",""):
         print("{0}: {1} {2} {3}".format(row[0],row[1],row[2],row[3]))
 
     return

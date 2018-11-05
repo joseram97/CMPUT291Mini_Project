@@ -98,6 +98,7 @@ def insert_data():
 def offer_ride(date,driver,seats,price,desc,src,dst,cno,enroute):
     ##TODO Check that cno belongs to the driver
     ##Needed for spec 1
+    rno = get_max_ride_id()[0] + 1
     offer_ride=     '''
                     INSERT INTO rides(rno, price, rdate, seats, lugDesc, src, dst, driver, cno) VALUES
                         (:rno,:price,:date,:seats,:desc,:src,:dst,:driver,:cno);
@@ -106,6 +107,7 @@ def offer_ride(date,driver,seats,price,desc,src,dst,cno,enroute):
     connection.commit()
     return
 
+#Returns all locations by lCode
 def get_locations_by_location_code(lCode):
     get_locations =     '''
                         SELECT * FROM locations WHERE lcode = :lcode;
@@ -114,6 +116,7 @@ def get_locations_by_location_code(lCode):
     connection.commit()
     return cursor.fetchone()
 
+#Returns all locations by keyword **Used if lCode is not found**
 def get_locations_by_keyword(keyword):
     keyword = '%'+keyword+'%'
     get_locations =     '''
@@ -127,26 +130,36 @@ def get_locations_by_keyword(keyword):
     connection.commit()
     return cursor.fetchall()
 
-
+##NOTE: Incomplete
 def search_for_rides(key1,key2,key3):
     key1 = '%'+key1+'%'
     key2 = '%'+key2+'%'
     key3 = '%'+key3+'%'
 
-
     ride_search =   '''
-                    SELECT * FROM locations WHERE city LIKE :key1
-                    OR city LIKE :key2
-                    OR city LIKE :key3
-                    UNION
-                    SELECT * FROM locations WHERE prov LIKE :key1
-                    OR prov LIKE :key2
-                    OR prov LIKE :key3
-                    UNION
-                    SELECT * FROM locations WHERE address LIKE :key1
-                    OR address LIKE :key2
-                    OR address LIKE :key3;
+                    SELECT DISTINCT r.*
+                    FROM rides r, enroute e, locations l
+                    WHERE r.rno = e.rno
+                    AND l.lCode = e.lCode
+                    AND l.city LIKE :key1
+                    OR l.prov LIKE :key1
+                    OR l.address LIKE :key1
+                    INTERSECT
+                    SELECT DISTINCT r.*
+                    FROM rides r, locations l
+                    WHERE r.src = l.lCode
+                    AND l.city LIKE :key2
+                    OR l.prov LIKE :key2
+                    OR l.address LIKE :key2
+                    INTERSECT
+                    SELECT DISTINCT r.*
+                    FROM rides r, locations l
+                    WHERE r.dst = l.lCode
+                    AND l.city LIKE :key3
+                    OR l.prov LIKE :key3
+                    OR l.address LIKE :key3;
                     '''
+
     cursor.execute(ride_search,{"key1":key1,"key2":key2,"key3":key3});
     connection.commit()
     return cursor.fetchall()
@@ -219,6 +232,22 @@ def get_car_by_cno(cno):
                 SELECT * FROM cars WHERE cno=:cno;
                 '''
     cursor.execute(get_car,{"cno":cno})
+    connection.commit()
+    return cursor.fetchone()
+
+def get_max_ride_id():
+    get_max = '''
+              SELECT MAX(rno) FROM rides r;
+              '''
+    cursor.execute(get_max)
+    connection.commit()
+    return cursor.fetchone()
+
+def get_max_request_id():
+    get_max = '''
+              SELECT MAX(rid) FROM requests r;
+              '''
+    cursor.execute(get_max)
     connection.commit()
     return cursor.fetchone()
 
